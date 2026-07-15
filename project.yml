@@ -1,0 +1,48 @@
+name: HomeSIP
+
+options:
+  bundleIdPrefix: com.manuzzi
+  deploymentTarget:
+    iOS: "15.0"
+
+packages:
+  LinphoneSDK:
+    # Mirror GitHub del repo ufficiale (gitlab.linphone.org non raggiungibile da questa rete
+    # al momento della creazione del progetto: vedi nota in PIANO_SVILUPPO.md).
+    url: https://github.com/BelledonneCommunications/linphone-sdk-swift-ios.git
+    branch: stable
+
+targets:
+  HomeSIP:
+    type: application
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: HomeSIP
+        excludes:
+          - "Resources/**"
+      - path: HomeSIP/Resources
+    info:
+      path: HomeSIP/Info.plist
+      properties:
+        UILaunchScreen: {}
+        UIBackgroundModes:
+          - audio
+          - voip
+        NSMicrophoneUsageDescription: "HomeSIP usa il microfono per le chiamate SIP."
+        NSLocalNetworkUsageDescription: "HomeSIP si collega al centralino Asterisk sulla rete locale di casa."
+    entitlements:
+      path: HomeSIP/HomeSIP.entitlements
+      properties:
+        aps-environment: development
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.manuzzi.homesip
+        PRODUCT_NAME: HomeSIP
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_STYLE: Automatic
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+    dependencies:
+      - package: LinphoneSDK
+        product: linphonesw

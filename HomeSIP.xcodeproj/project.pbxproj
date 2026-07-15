@@ -1,0 +1,397 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		443C175A9E15BD87E352F8CB /* linphonesw in Frameworks */ = {isa = PBXBuildFile; productRef = 5C03D9577D4BAB2D9E279B37 /* linphonesw */; };
+		8333E79C62FACC1B4B4C829C /* SIPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E071771C4F3447EECB7FD78 /* SIPManager.swift */; };
+		9CE02872A164F28F543865F3 /* HomeSIPApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E6573BD5FA8B066B0DA40A /* HomeSIPApp.swift */; };
+		A1CA181F8F35C27115D671FD /* SIPCredentials.swift.example in Resources */ = {isa = PBXBuildFile; fileRef = 7E7B53DD061D109892D490F8 /* SIPCredentials.swift.example */; };
+		C05F3215BCA57CD88AB013C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4494D7B24F0EEDF3FD6BFD17 /* Assets.xcassets */; };
+		E51B78FB23C230DDB3F3A729 /* SIPCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4CB5483FF2F76B3F2EB2942 /* SIPCredentials.swift */; };
+		F3603A2E53B7D965F54EEDA8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466B73744E5CA8F98D89456F /* ContentView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0E071771C4F3447EECB7FD78 /* SIPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIPManager.swift; sourceTree = "<group>"; };
+		4494D7B24F0EEDF3FD6BFD17 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		466B73744E5CA8F98D89456F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		7592E17B17E9B93B168AA6E0 /* HomeSIP.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = HomeSIP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E7B53DD061D109892D490F8 /* SIPCredentials.swift.example */ = {isa = PBXFileReference; path = SIPCredentials.swift.example; sourceTree = "<group>"; };
+		85D16B29E71AE9912E1BD2C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8735E8F13385FAE9C9FF0F72 /* HomeSIP.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeSIP.entitlements; sourceTree = "<group>"; };
+		A4CB5483FF2F76B3F2EB2942 /* SIPCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIPCredentials.swift; sourceTree = "<group>"; };
+		D7E6573BD5FA8B066B0DA40A /* HomeSIPApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSIPApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		ACF6FED68B6694947A26D837 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				443C175A9E15BD87E352F8CB /* linphonesw in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		106511860F51A3AA681BDC8B /* HomeSIP */ = {
+			isa = PBXGroup;
+			children = (
+				8735E8F13385FAE9C9FF0F72 /* HomeSIP.entitlements */,
+				85D16B29E71AE9912E1BD2C1 /* Info.plist */,
+				ECF787A617418E43CA98C072 /* App */,
+				BEB3D89D5C0BB95E5B946E58 /* SIP */,
+				2A500CA9B20B0792F2EDDF61 /* UI */,
+			);
+			path = HomeSIP;
+			sourceTree = "<group>";
+		};
+		2A4356B708DB308799A36C04 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7592E17B17E9B93B168AA6E0 /* HomeSIP.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2A500CA9B20B0792F2EDDF61 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				466B73744E5CA8F98D89456F /* ContentView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		BEB3D89D5C0BB95E5B946E58 /* SIP */ = {
+			isa = PBXGroup;
+			children = (
+				A4CB5483FF2F76B3F2EB2942 /* SIPCredentials.swift */,
+				7E7B53DD061D109892D490F8 /* SIPCredentials.swift.example */,
+				0E071771C4F3447EECB7FD78 /* SIPManager.swift */,
+			);
+			path = SIP;
+			sourceTree = "<group>";
+		};
+		E23A69AFEB6A95B9B53F05B0 = {
+			isa = PBXGroup;
+			children = (
+				106511860F51A3AA681BDC8B /* HomeSIP */,
+				F9FD70F5079BB061E052A447 /* Resources */,
+				2A4356B708DB308799A36C04 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		ECF787A617418E43CA98C072 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				D7E6573BD5FA8B066B0DA40A /* HomeSIPApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F9FD70F5079BB061E052A447 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4494D7B24F0EEDF3FD6BFD17 /* Assets.xcassets */,
+			);
+			name = Resources;
+			path = HomeSIP/Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5CF33AAF5B80155101B14940 /* HomeSIP */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3DCF8936E1518B3BAC0AAECA /* Build configuration list for PBXNativeTarget "HomeSIP" */;
+			buildPhases = (
+				C638F73634D0DA7872E2E00A /* Sources */,
+				2F88890F675CBAB67C238C58 /* Resources */,
+				ACF6FED68B6694947A26D837 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HomeSIP;
+			packageProductDependencies = (
+				5C03D9577D4BAB2D9E279B37 /* linphonesw */,
+			);
+			productName = HomeSIP;
+			productReference = 7592E17B17E9B93B168AA6E0 /* HomeSIP.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6E90F7E5F19DD776F4BA1B36 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					5CF33AAF5B80155101B14940 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = E46F52C7904DA9C633B49C1C /* Build configuration list for PBXProject "HomeSIP" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = E23A69AFEB6A95B9B53F05B0;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3DA7C84737946EB2F4E1AB48 /* XCRemoteSwiftPackageReference "linphone-sdk-swift-ios" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 2A4356B708DB308799A36C04 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5CF33AAF5B80155101B14940 /* HomeSIP */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2F88890F675CBAB67C238C58 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C05F3215BCA57CD88AB013C3 /* Assets.xcassets in Resources */,
+				A1CA181F8F35C27115D671FD /* SIPCredentials.swift.example in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C638F73634D0DA7872E2E00A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3603A2E53B7D965F54EEDA8 /* ContentView.swift in Sources */,
+				9CE02872A164F28F543865F3 /* HomeSIPApp.swift in Sources */,
+				E51B78FB23C230DDB3F3A729 /* SIPCredentials.swift in Sources */,
+				8333E79C62FACC1B4B4C829C /* SIPManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9D7FAB8B76676B543A59753C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		C8F38FA38DCCB894A6133CCE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HomeSIP/HomeSIP.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = HomeSIP/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.manuzzi.homesip;
+				PRODUCT_NAME = HomeSIP;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		CF2746CEB067BD8951DA4EB1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F03CAB9CE2A1DFFE5A9AC3E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HomeSIP/HomeSIP.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = HomeSIP/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.manuzzi.homesip;
+				PRODUCT_NAME = HomeSIP;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3DCF8936E1518B3BAC0AAECA /* Build configuration list for PBXNativeTarget "HomeSIP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C8F38FA38DCCB894A6133CCE /* Debug */,
+				F03CAB9CE2A1DFFE5A9AC3E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E46F52C7904DA9C633B49C1C /* Build configuration list for PBXProject "HomeSIP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF2746CEB067BD8951DA4EB1 /* Debug */,
+				9D7FAB8B76676B543A59753C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3DA7C84737946EB2F4E1AB48 /* XCRemoteSwiftPackageReference "linphone-sdk-swift-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/BelledonneCommunications/linphone-sdk-swift-ios.git";
+			requirement = {
+				branch = stable;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5C03D9577D4BAB2D9E279B37 /* linphonesw */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3DA7C84737946EB2F4E1AB48 /* XCRemoteSwiftPackageReference "linphone-sdk-swift-ios" */;
+			productName = linphonesw;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 6E90F7E5F19DD776F4BA1B36 /* Project object */;
+}

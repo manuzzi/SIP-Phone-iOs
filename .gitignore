@@ -1,2 +1,13 @@
 .config.local/*
 .DS_Store
+
+# Xcode / Swift Package Manager
+xcuserdata/
+*.xcuserstate
+.build/
+.swiftpm/
+DerivedData/
+
+# Credenziali SIP reali (vedi SIPCredentials.swift.example per il template)
+HomeSIP/SIP/SIPCredentials.swift
+
