@@ -9,7 +9,7 @@ Contesto infrastrutturale di riferimento: vedi [`.config.local/CONFIGURAZIONE.md
 | Decisione | Scelta | Motivazione |
 |---|---|---|
 | Motore SIP/RTP | **Linphone SDK (liblinphone)**, integrato via Swift Package Manager | Esempi ufficiali CallKit+PushKit già pronti e mantenuti, coerenza con l'uso attuale di Linphone come client, evita di scrivere uno stack SIP/RTP da zero |
-| Push relay (avviso APNs alla chiamata in arrivo) | Servizio containerizzato **Docker** sullo stesso NanoPi R6S | Docker è già installato sul router; nessun host aggiuntivo da gestire, immagine versionabile/aggiornabile |
+| Push relay (avviso APNs alla chiamata in arrivo) | Servizio containerizzato **Docker** sullo stesso NanoPi R6S, sviluppato in repo dedicato [`SIP-Phone-PushRelay`](https://github.com/manuzzi/SIP-Phone-PushRelay) | Docker è già installato sul router; nessun host aggiuntivo da gestire, immagine versionabile/aggiornabile. Repo separato: runtime/toolchain diversi (Go/Docker vs Swift/Xcode), secrets diversi da gestire (AMI, APNs), ciclo di vita indipendente dalle release dell'app |
 | Interno di sviluppo/test | **Riuso diretto dell'interno 101** | `max_contacts=2` in `pjsip.conf` permette a Linphone e alla nuova app di essere registrati contemporaneamente: le chiamate in arrivo squillano su entrambi, zero rischio di interrompere la telefonia funzionante |
 | Videochiamate | **Fuori scope** (solo audio) | Coerente con l'uso attuale (telefonia fissa + interni); Linphone SDK supporta comunque video se servisse in futuro |
 | Cifratura SIP/RTP | **Invariata** (UDP in chiaro, no TLS/SRTP) | Il traffico remoto è già protetto dal tunnel WireGuard; nessuna modifica lato Asterisk per restare nello scope minimo |
