@@ -1,16 +1,20 @@
 import Foundation
 import linphonesw
 
-/// Spike M0: registrazione SIP e chiamata di base verso l'interno di test (101),
-/// per validare che l'audio funzioni end-to-end contro l'Asterisk di casa prima
-/// di costruire CallKit/PushKit (M1/M2) sopra questa base.
+/// Registrazione SIP e gestione delle chiamate verso l'interno di test (101).
+/// Le decisioni sull'interfaccia di sistema (schermata di chiamata, Recenti)
+/// sono delegate a CallManager: qui viviamo solo il livello SIP/RTP.
 ///
-/// Credenziali hardcoded volutamente: verranno spostate in una schermata di
-/// configurazione persistita in una milestone successiva (vedi PIANO_SVILUPPO.md).
+/// Credenziali hardcoded volutamente in SIPCredentials.swift (non versionato):
+/// verranno spostate in una schermata di configurazione persistita in una
+/// milestone successiva (vedi PIANO_SVILUPPO.md).
 final class SIPManager: ObservableObject {
 
     @Published var registrationState: String = "Non avviato"
     @Published var callState: String = "Nessuna chiamata"
+    @Published var isCallActive: Bool = false
+    @Published var isIncomingRinging: Bool = false
+    @Published var remoteDisplayName: String = ""
 
     private let sipUsername = SIPCredentials.username
     private let sipPassword = SIPCredentials.password
@@ -21,15 +25,23 @@ final class SIPManager: ObservableObject {
     private var iterateTimer: Timer?
 
     func start() {
+        CallManager.shared.sipManager = self
+
         do {
             let factory = Factory.Instance
             core = try factory.createCore(configPath: "", factoryConfigPath: "", systemContext: nil)
 
+            // Lascia che sia CallKit a guidare l'attivazione della sessione audio
+            // (vedi CallManager.provider(_:didActivate/didDeactivate:)). Sul simulatore
+            // CallKit non viene usato (vedi CallManager), quindi il Core gestisce
+            // l'audio session in autonomia come in M0.
+            #if !targetEnvironment(simulator)
+            core.callkitEnabled = true
+            #endif
+
             coreDelegate = CoreDelegateStub(
-                onCallStateChanged: { [weak self] _, _, state, message in
-                    DispatchQueue.main.async {
-                        self?.callState = "\(state) — \(message)"
-                    }
+                onCallStateChanged: { [weak self] _, call, state, message in
+                    self?.handleCallStateChanged(call: call, state: state, message: message)
                 },
                 onAccountRegistrationStateChanged: { [weak self] _, account, state, message in
                     DispatchQueue.main.async {
@@ -82,8 +94,52 @@ final class SIPManager: ObservableObject {
         core.defaultAccount = account
     }
 
+    // MARK: - Stato chiamata → CallKit
+
+    private func handleCallStateChanged(call: Call, state: Call.State, message: String) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.callState = "\(state) — \(message)"
+            switch state {
+            case .Released:
+                self.isCallActive = false
+                self.isIncomingRinging = false
+                self.remoteDisplayName = ""
+            case .IncomingReceived:
+                self.isCallActive = true
+                self.isIncomingRinging = true
+                if let addr = call.remoteAddress {
+                    self.remoteDisplayName = addr.displayName ?? addr.username ?? addr.asStringUriOnly()
+                }
+            default:
+                self.isCallActive = true
+                self.isIncomingRinging = false
+                if let addr = call.remoteAddress {
+                    self.remoteDisplayName = addr.displayName ?? addr.username ?? addr.asStringUriOnly()
+                }
+            }
+        }
+
+        switch state {
+        case .IncomingReceived:
+            let handle = call.remoteAddress?.asStringUriOnly() ?? "sconosciuto"
+            let displayName = call.remoteAddress?.displayName ?? call.remoteAddress?.username ?? handle
+            CallManager.shared.reportIncomingCall(handle: handle, displayName: displayName)
+        case .StreamsRunning:
+            if call.dir == .Outgoing {
+                CallManager.shared.reportOutgoingCallConnected()
+            }
+        case .End, .Error:
+            CallManager.shared.reportCallEnded()
+        default:
+            break
+        }
+    }
+
+    // MARK: - Azioni richieste da CallManager
+
     /// Chiama un altro interno (es. "100") o un numero esterno via trunk Vodafone.
-    func call(to destination: String) {
+    func placeCall(to destination: String) {
         guard let core else { return }
         do {
             let address = try Factory.Instance.createAddress(addr: "sip:\(destination)@\(sipDomain)")
@@ -94,7 +150,35 @@ final class SIPManager: ObservableObject {
         }
     }
 
+    func answerIncomingCall() {
+        guard let core, let call = core.currentCall else { return }
+        do {
+            let params = try core.createCallParams(call: call)
+            try call.acceptWithParams(params: params)
+        } catch {
+            callState = "Errore risposta: \(error)"
+        }
+    }
+
     func hangup() {
-        try? core?.currentCall?.terminate()
+        guard let call = core?.currentCall else { return }
+        try? call.terminate()
+    }
+
+    func setMuted(_ muted: Bool) {
+        core?.micEnabled = !muted
+    }
+
+    func sendDTMF(_ digit: Character) {
+        guard let call = core?.currentCall, let asciiValue = String(digit).cString(using: .utf8)?.first else { return }
+        try? call.sendDtmf(dtmf: asciiValue)
+    }
+
+    func configureAudioSession() {
+        core?.configureAudioSession()
+    }
+
+    func setAudioSessionActive(_ active: Bool) {
+        core?.activateAudioSession(activated: active)
     }
 }
