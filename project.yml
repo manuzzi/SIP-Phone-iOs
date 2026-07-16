@@ -1,7 +1,7 @@
 name: HomeSIP
 
 options:
-  bundleIdPrefix: com.manuzzi
+  bundleIdPrefix: work.manuzzi
   deploymentTarget:
     iOS: "15.0"
 
@@ -37,10 +37,11 @@ targets:
         aps-environment: development
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.manuzzi.homesip
+        PRODUCT_BUNDLE_IDENTIFIER: work.manuzzi.homesip
         PRODUCT_NAME: HomeSIP
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: WQZGRLXS8K
         SWIFT_VERSION: "5.0"
         TARGETED_DEVICE_FAMILY: "1"
     dependencies:

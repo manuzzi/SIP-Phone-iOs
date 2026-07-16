@@ -10,7 +10,7 @@ Contesto infrastrutturale di riferimento: vedi [`.config.local/CONFIGURAZIONE.md
 |---|---|---|
 | Motore SIP/RTP | **Linphone SDK (liblinphone)**, integrato via Swift Package Manager | Esempi ufficiali CallKit+PushKit già pronti e mantenuti, coerenza con l'uso attuale di Linphone come client, evita di scrivere uno stack SIP/RTP da zero |
 | Push relay (avviso APNs alla chiamata in arrivo) | Servizio containerizzato **Docker** sullo stesso NanoPi R6S, sviluppato in repo dedicato [`SIP-Phone-PushRelay`](https://github.com/manuzzi/SIP-Phone-PushRelay) | Docker è già installato sul router; nessun host aggiuntivo da gestire, immagine versionabile/aggiornabile. Repo separato: runtime/toolchain diversi (Go/Docker vs Swift/Xcode), secrets diversi da gestire (AMI, APNs), ciclo di vita indipendente dalle release dell'app |
-| Interno di sviluppo/test | **Riuso diretto dell'interno 101** | `max_contacts=2` in `pjsip.conf` permette a Linphone e alla nuova app di essere registrati contemporaneamente: le chiamate in arrivo squillano su entrambi, zero rischio di interrompere la telefonia funzionante |
+| Interno di sviluppo/test | **Riuso diretto dell'interno 101** | Inizialmente `max_contacts=2` per coesistere con Linphone durante i test; portato a **`max_contacts=1`** durante M2 dopo aver scoperto che ogni riavvio dell'app lascia un contatto SIP fantasma (nuova porta UDP ad ogni lancio), che il vecchio valore lasciava accumulare causando fork verso contatti morti |
 | Videochiamate | **Fuori scope** (solo audio) | Coerente con l'uso attuale (telefonia fissa + interni); Linphone SDK supporta comunque video se servisse in futuro |
 | Cifratura SIP/RTP | **Invariata** (UDP in chiaro, no TLS/SRTP) | Il traffico remoto è già protetto dal tunnel WireGuard; nessuna modifica lato Asterisk per restare nello scope minimo |
 | Distribuzione | App personale, architettura pulita (no credenziali hardcoded), eventuale apertura futura da valutare | Vedi nota licenza SDK sotto |
@@ -21,17 +21,22 @@ Contesto infrastrutturale di riferimento: vedi [`.config.local/CONFIGURAZIONE.md
 
 ```
 iPhone (app SIP)                    NanoPi R6S / FriendlyWRT
-┌─────────────────────┐            ┌──────────────────────────┐
-│ Linphone SDK          │  SIP/RTP  │ Asterisk 20.8.1            │
-│ (liblinphone)         │◄──UDP────►│  interno 101 (riusato)     │
-│ CallKit + PushKit      │  :5060    │  AMI (nuovo, localhost)    │
-│ Intents Extension      │           └──────────┬─────────────────┘
-└─────────▲─────────────┘                       │ evento DialBegin→101
-          │ VoIP Push (APNs)          ┌──────────▼─────────────┐
-          └───────────────────────────┤ Push relay (Docker, Go)  │
-                                       │  client AMI + APNs API   │
-                                       └───────────────────────────┘
+┌─────────────────────┐            ┌──────────────────────────────┐
+│ Linphone SDK          │  SIP/RTP  │ Asterisk 20.8.1                │
+│ (liblinphone)         │◄──UDP────►│  interno 101 (riusato)         │
+│ CallKit + PushKit      │  :5060    │  ARI + HTTP (nuovo, localhost)  │
+│ Intents Extension      │           │  dialplan: Stasis(homesip-      │
+└──────────▲────────────┘           │  wakeup) come fallback dopo un  │
+     VoIP  │      /device-ready     │  primo Dial() diretto fallito   │
+     Push  │      (dopo REGISTER)   └──────────┬───────────────────────┘
+    (APNs) │  ┌─────────────────────────────────┘ StasisStart + ring/continue
+           └──┤ Push relay (Docker, Go) — client ARI (WebSocket eventi + REST)
+              └─────────────────────────────────────────────────────────────
 ```
+
+Il relay non si limita più a osservare (come un design iniziale basato su AMI):
+tiene la chiamata in pausa finché l'app non conferma di essersi ri-registrata,
+invece di indovinare un tempo di attesa fisso — vedi dettaglio più sotto.
 
 ## Milestone
 
@@ -48,14 +53,14 @@ iPhone (app SIP)                    NanoPi R6S / FriendlyWRT
 - Chiamate entranti con app aperta/attiva in background
 - **Validazione:** chiamata verso un numero esterno reale e ricezione di una chiamata dall'esterno con app aperta, qualità comparabile a Linphone
 
-### M2 — Affidabilità in background: PushKit + push relay
-- Abilitazione AMI su Asterisk (`manager.conf`, utente dedicato read-only, bind solo `127.0.0.1`)
-- Push relay containerizzato (Go, immagine minimale, `network_mode: host`) che ascolta eventi `DialBegin` verso `PJSIP/101-*` e invia VoIP Push via APNs (auth key `.p8`, topic `<bundle-id>.voip`)
-- Dedup per `Uniqueid` sorgente (il forking su più contatti dell'aor 101 genera più `DialBegin` per la stessa chiamata logica)
-- Endpoint locale di registrazione device token (protetto da bearer secret, accessibile solo da LAN/WireGuard)
-- App: gestione PushKit → `reportNewIncomingCall` immediato → completamento registrazione/gestione INVITE
-- WireGuard iOS in modalità on-demand/always-on per garantire raggiungibilità di `192.168.1.1` all'arrivo del push
-- **Validazione:** chiamata ricevuta con successo in foreground, background, app terminata (swipe-killed), telefono bloccato, sia su WiFi casa sia fuori casa via cellulare+VPN; squillo entro pochi secondi dall'INVITE reale
+### M2 — Affidabilità in background: PushKit + push relay ✅ completata
+- Push relay containerizzato (Go, immagine minimale, `network_mode: host`) collegato ad Asterisk via **ARI** (non AMI: vedi dettaglio più sotto per il perché del cambio)
+- App: gestione PushKit → `reportNewIncomingCall` immediato → correlazione con il vero INVITE quando arriva (gestisce anche il caso in cui l'utente risponde prima che l'INVITE sia arrivato)
+- Dialplan con fallback su `Stasis(homesip-wakeup)` quando il primo tentativo diretto su 101 fallisce, invece di un'attesa a tempo fisso
+- Endpoint locale `/device-ready` (oltre a `/register-token`), protetto da bearer secret, accessibile solo da LAN/WireGuard
+- **Validazione:** chiamata ricevuta con successo in foreground, background e **app completamente terminata**, sia da chiamata interna (Mac→101) sia da chiamata esterna reale (Vodafone); audio bidirezionale confermato
+
+**Percorso reale (per riferimento futuro):** il primo design (osservare `DialBegin` via AMI + attesa fissa `Wait(4)` nel dialplan prima di ritentare) si è rivelato inaffidabile — bug applicativi (doppio accept CallKit+UI, risposta prima dell'INVITE reale, push ridondante ad app già in foreground) mascheravano inizialmente il problema di fondo: Asterisk non aspetta che l'app si risvegli, fallisce subito se il contatto SIP non è ancora registrato nell'istante esatto del `Dial()`. Risolti i bug applicativi, restava il problema di timing — la soluzione strutturale (ispirata a come Flexisip, il push gateway ufficiale di Linphone, risolve lo stesso problema) è passare da un'attesa indovinata a un'attesa **basata su segnale reale**, usando ARI/Stasis per mettere in pausa la chiamata finché l'app non conferma di essere pronta.
 
 ### M3 — DTMF e funzionalità in chiamata
 - Tastierino DTMF in-call (RFC4733, già configurato lato Asterisk con `dtmf_mode=rfc4733`)
@@ -84,54 +89,79 @@ iPhone (app SIP)                    NanoPi R6S / FriendlyWRT
 
 ## Dettaglio push relay (M2)
 
+Repo dedicato: [`SIP-Phone-PushRelay`](https://github.com/manuzzi/SIP-Phone-PushRelay).
+
 ### Container e networking
 `network_mode: host` invece del bridge Docker di default: su OpenWrt il bridge interagisce in modo imprevedibile con `fw4`/`nftables`, e il servizio non deve esporre porte verso l'esterno — solo connessioni in uscita verso Asterisk (localhost) e APNs.
 
-### Configurazione AMI (`/etc/asterisk/manager.conf`)
+### Dialplan: fallback su Stasis
+Il primo tentativo su 101 resta un `Dial()` diretto e veloce (copre il caso comune: app già registrata, sospesa ma non terminata). Solo se quel tentativo fallisce, il canale entra nell'app Stasis `homesip-wakeup`, che il relay controlla via ARI:
+
+```
+exten => 101,1,Dial(PJSIP/101,8)
+ same => n,GotoIf($["${DIALSTATUS}" = "ANSWER"]?done)
+ same => n,Stasis(homesip-wakeup,101)
+ same => n,Dial(PJSIP/101,15)
+ same => n(done),Hangup()
+```
+
+Stesso pattern in `[from-vodafone]` per le chiamate esterne (che forkano su `PJSIP/100&PJSIP/101`): il fallback su Stasis scatta solo se nessuno dei due ha risposto, senza toccare l'esperienza su Mac (100).
+
+### Configurazione ARI/HTTP (`/etc/asterisk/http.conf` + `ari.conf`)
+Richiede pacchetti opkg aggiuntivi non installati di default: `asterisk-res-ari`, `-applications`, `-channels`, `-events`, `asterisk-res-stasis`, `asterisk-app-stasis`, `asterisk-res-stasis-answer`.
+
 ```ini
+; http.conf
 [general]
 enabled = yes
-port = 5038
 bindaddr = 127.0.0.1
+bindport = 8089   ; 8080 già occupata da uhttpd/LuCI, 8088 dal relay stesso
 
-[pushrelay]
-secret = <secret-random-forte>
-read = call,dialplan
-write =
-permit = 127.0.0.1/255.255.255.255
+; ari.conf
+[general]
+enabled = yes
+
+[homesip]
+type = user
+read_only = no
+password = <secret-random-forte>
 ```
-Nessuna modifica a `extensions.conf`: il relay è un puro osservatore passivo.
 
-### Rilevamento chiamata
-Ascolto evento `DialBegin`, filtro su `DestChannel` che inizia con `PJSIP/101-`. Dedup per `Uniqueid` del canale sorgente con finestra di debounce (~8s), dato che un singolo `Dial(PJSIP/101,25)` forka su tutti i contatti registrati dell'aor.
+### Flusso: StasisStart → push → attesa → continue
+1. Il canale entra in Stasis → il relay riceve `StasisStart` via WebSocket (`/ari/events`)
+2. `POST /channels/{id}/ring` — il chiamante sente lo squillo invece del silenzio durante l'attesa
+3. Invio VoIP Push APNs con i dati del chiamante (dall'evento stesso, non serve più interrogare Asterisk separatamente)
+4. Attesa (con timeout di 20s) di un segnale `/device-ready` dall'app
+5. `POST /channels/{id}/continue` — la chiamata torna al dialplan, che a quel punto trova il contatto (si spera) già registrato
+
+Nessun dedup necessario: a differenza del vecchio design basato su AMI (dove un `Dial()` che forka su più contatti genera più eventi `DialBegin` per la stessa chiamata), qui `Stasis()` viene invocato una sola volta per chiamata, solo sul ramo 101 specifico.
 
 ### VoIP Push (APNs)
 - Auth key `.p8` token-based (JWT ES256, claims `iss=<Team ID>`, `kid=<Key ID>`, rigenerato ogni ~50 min)
-- `POST https://api.push.apple.com/3/device/<token>` (sandbox per build di sviluppo)
+- `POST https://api.push.apple.com/3/device/<token>` (sandbox per build di sviluppo firmate "Development", come quelle lanciate da Xcode)
 - Header: `apns-topic: <bundle-id>.voip`, `apns-push-type: voip`, `apns-priority: 10`, `apns-expiration` breve (~30s)
-- Payload minimale: `{"callId": "<uuid>", "callerNumber": "...", "callerName": "...", "ts": <epoch>}`
 
-### Registrazione device token
+### Endpoint HTTP del relay
 ```
-POST /register-token
-Authorization: Bearer <shared-secret>
-{"deviceToken": "..."}
+POST /register-token      { "deviceToken": "..." }   — nuovo token PushKit
+POST /device-ready                                    — l'app si è ri-registrata
+GET  /healthz                                         — stato connessione ARI
 ```
-Token persistito su volume Docker montato, non nell'immagine.
+Tutti (tranne `/healthz`) protetti da bearer secret condiviso. Device token persistito su volume Docker montato, non nell'immagine.
 
 ### Deployment
-Dockerfile multi-stage (build Go arm64 → immagine finale `distroless/static`), `docker-compose.yml` con `restart: unless-stopped`, log con `max-size`/`max-file` per non riempire la flash del router. Verificare `/etc/init.d/dockerd enable` per il riavvio automatico dopo reboot del router.
+Dockerfile multi-stage (build Go arm64 → immagine finale `distroless/static`), `docker-compose.yml` con `restart: unless-stopped`, log con `max-size`/`max-file` per non riempire la flash del router. Verificare `/etc/init.d/dockerd enable` per il riavvio automatico dopo reboot del router. Unica dipendenza esterna del modulo Go: `gorilla/websocket` (client eventi ARI) — non vale la pena scriverne uno a mano solo per evitare una dipendenza.
 
 ### Resilienza
-- Riconnessione AMI con backoff esponenziale e ri-login automatico
+- Riconnessione ARI (WebSocket) con backoff esponenziale
 - Gestione errori APNs (`410 Unregistered` → invalida token salvato; errori di firma/topic → log di alta severità)
-- Endpoint `/healthz` che riflette lo stato della connessione AMI
+- Endpoint `/healthz` che riflette lo stato della connessione ARI
+- Se `/device-ready` non arriva mai (app non si ri-registra), il timeout di 20s in Stasis fa comunque procedere il `continue`, evitando che la chiamata resti bloccata all'infinito
 
-### Test specifici
-1. Chiamata reale verso 101 con relay attivo → push ricevuta entro ~200ms dall'INVITE
-2. Restart di Asterisk mentre il relay è attivo → riconnessione automatica
-3. Restart del router → Docker e container ripartono da soli
-4. Linphone + nuova app entrambi registrati su 101 → una sola push (dedup funzionante) nonostante il forking
+### Test specifici (tutti superati)
+1. Chiamata Mac→101 e chiamata esterna reale, con app completamente terminata → notifica e audio funzionanti
+2. Restart di Asterisk mentre il relay è attivo → riconnessione ARI automatica
+3. Verifica manuale del flusso StasisStart→ring→push→device-ready→continue con un mock ARI locale prima del deploy in produzione
 
 ## Logo
 

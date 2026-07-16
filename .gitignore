@@ -11,3 +11,10 @@ DerivedData/
 # Credenziali SIP reali (vedi SIPCredentials.swift.example per il template)
 HomeSIP/SIP/SIPCredentials.swift
 
+# Configurazione reale del push relay (vedi PushRelayConfig.swift.example)
+HomeSIP/SIP/PushRelayConfig.swift
+
+# Chiavi APNs (.p8) — materiale crittografico privato, mai in un repo pubblico
+Keys/
+*.p8
+

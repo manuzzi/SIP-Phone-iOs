@@ -2,10 +2,12 @@ import Foundation
 import CallKit
 import AVFoundation
 
-/// Integrazione CallKit per M1: gestisce l'interfaccia di sistema (schermata di chiamata
+/// Integrazione CallKit: gestisce l'interfaccia di sistema (schermata di chiamata
 /// nativa, Recenti, indicatore in-chiamata) per UNA sola chiamata alla volta.
-/// Niente conferenze/trasferimenti/attesa multi-chiamata: fuori scope per M1
-/// (vedi PIANO_SVILUPPO.md).
+/// Niente conferenze/trasferimenti/attesa multi-chiamata: fuori scope
+/// (vedi PIANO_SVILUPPO.md). Gestisce anche le chiamate innescate da VoIP
+/// push (M2): vedi reportPushTriggeredIncomingCall e la correlazione con
+/// il vero INVITE in reportIncomingCall.
 ///
 /// Il simulatore iOS ha un supporto CallKit inaffidabile (lo stesso approccio è
 /// usato dall'app ufficiale Linphone, che disabilita CallKit su simulatore): le
@@ -23,6 +25,18 @@ final class CallManager: NSObject, ObservableObject {
     private var activeCallUUID: UUID?
     private var endReportedToCallKit = false
 
+    /// Vero tra la segnalazione di una chiamata scaturita da una VoIP push
+    /// (nessun contesto SIP ancora disponibile) e l'arrivo del vero INVITE.
+    private var isPendingFromPush = false
+    private var pushTimeoutWorkItem: DispatchWorkItem?
+
+    /// Se l'utente tocca "Rispondi" mentre la chiamata è ancora "fantasma"
+    /// (push arrivata, INVITE reale non ancora ricevuto — push e INVITE
+    /// viaggiano in parallelo, senza garanzia di ordine), l'azione va tenuta
+    /// in sospeso e completata non appena l'INVITE arriva, invece di fallire
+    /// subito solo perché non c'è ancora nessuna chiamata Linphone reale.
+    private var pendingAnswerAction: CXAnswerCallAction?
+
     private var isSimulator: Bool {
         #if targetEnvironment(simulator)
         return true
@@ -34,7 +48,9 @@ final class CallManager: NSObject, ObservableObject {
     private override init() {
         provider = CXProvider(configuration: CallManager.providerConfiguration)
         super.init()
-        provider.setDelegate(self, queue: nil)
+        // Sempre sul thread main: SIPManager notifica anch'esso da lì, evita
+        // di dover sincronizzare l'accesso allo stato di questa classe tra code diverse.
+        provider.setDelegate(self, queue: .main)
     }
 
     private static var providerConfiguration: CXProviderConfiguration {
@@ -76,6 +92,29 @@ final class CallManager: NSObject, ObservableObject {
             return
         }
 
+        if isPendingFromPush, let uuid = activeCallUUID {
+            // Il vero INVITE SIP è arrivato per una chiamata già segnalata a
+            // partire dalla VoIP push: aggiorniamo il CXCall esistente con i
+            // dati reali invece di segnalarne uno nuovo (eviterebbe una
+            // seconda schermata di chiamata per lo stesso squillo).
+            pushTimeoutWorkItem?.cancel()
+            isPendingFromPush = false
+
+            let update = CXCallUpdate()
+            update.remoteHandle = CXHandle(type: .generic, value: handle)
+            update.localizedCallerName = displayName
+            update.hasVideo = false
+            provider.reportCall(with: uuid, updated: update)
+
+            // L'utente aveva già toccato "Rispondi" mentre eravamo ancora in
+            // attesa dell'INVITE reale: completiamo ora quella risposta.
+            if let pendingAction = pendingAnswerAction {
+                pendingAnswerAction = nil
+                completeAnswer(pendingAction)
+            }
+            return
+        }
+
         let uuid = UUID()
         activeCallUUID = uuid
         endReportedToCallKit = false
@@ -88,9 +127,56 @@ final class CallManager: NSObject, ObservableObject {
         provider.reportNewIncomingCall(with: uuid, update: update) { [weak self] error in
             if let error {
                 print("CallKit: chiamata in arrivo non segnalabile: \(error)")
-                self?.activeCallUUID = nil
+                self?.clearActiveCall()
             }
         }
+    }
+
+    /// Da chiamare da PKPushRegistryDelegate non appena arriva una VoIP push:
+    /// non c'è ancora nessun contesto SIP (il vero INVITE potrebbe non essere
+    /// nemmeno arrivato), ma la chiamata va comunque segnalata immediatamente
+    /// a CallKit — è un requisito Apple, non rispettarlo per ogni push VoIP
+    /// ricevuta espone l'app al rischio che iOS revochi l'entitlement.
+    func reportPushTriggeredIncomingCall(callerNumber: String, callerName: String) {
+        guard !isSimulator else { return }
+
+        // Il relay invia la push indipendentemente dallo stato dell'app: se
+        // l'app era già in primo piano e ha già ricevuto il vero INVITE SIP
+        // direttamente (reportIncomingCall ha già impostato activeCallUUID),
+        // questa push è ridondante — segnalarla comunque creerebbe una
+        // seconda chiamata fantasma per lo stesso squillo.
+        guard activeCallUUID == nil else { return }
+
+        let uuid = UUID()
+        activeCallUUID = uuid
+        endReportedToCallKit = false
+        isPendingFromPush = true
+
+        let update = CXCallUpdate()
+        update.remoteHandle = CXHandle(type: .generic, value: callerNumber.isEmpty ? "Sconosciuto" : callerNumber)
+        update.localizedCallerName = callerName.isEmpty ? "Chiamata in arrivo" : callerName
+        update.hasVideo = false
+
+        provider.reportNewIncomingCall(with: uuid, update: update) { [weak self] error in
+            if let error {
+                print("CallKit: chiamata da push non segnalabile: \(error)")
+                self?.clearActiveCall()
+            }
+        }
+
+        // Se l'INVITE SIP reale non arriva entro un tempo ragionevole (rete
+        // irraggiungibile, relay non funzionante), la chiamata "fantasma"
+        // va chiusa esplicitamente invece di restare appesa in Recenti.
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self, self.isPendingFromPush, self.activeCallUUID == uuid else { return }
+            if let pendingAction = self.pendingAnswerAction {
+                self.pendingAnswerAction = nil
+                pendingAction.fail()
+            }
+            self.reportCallEnded(reason: .failed)
+        }
+        pushTimeoutWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 25, execute: workItem)
     }
 
     // MARK: - Notifiche di stato dal livello SIP verso CallKit
@@ -142,6 +228,10 @@ final class CallManager: NSObject, ObservableObject {
 
     private func clearActiveCall() {
         activeCallUUID = nil
+        isPendingFromPush = false
+        pushTimeoutWorkItem?.cancel()
+        pushTimeoutWorkItem = nil
+        pendingAnswerAction = nil
     }
 }
 
@@ -162,8 +252,31 @@ extension CallManager: CXProviderDelegate {
 
     func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
         sipManager?.configureAudioSession()
-        sipManager?.answerIncomingCall()
-        action.fulfill()
+
+        if isPendingFromPush {
+            // L'utente ha risposto prima che il vero INVITE SIP arrivasse
+            // (push e INVITE non sono garantiti nello stesso ordine): non
+            // fallire subito, la risposta verrà completata da reportIncomingCall
+            // non appena il vero INVITE si correla con questa chiamata
+            // "fantasma" (o fallita dal timeout in reportPushTriggeredIncomingCall
+            // se l'INVITE non arriva mai).
+            pendingAnswerAction = action
+            return
+        }
+        completeAnswer(action)
+    }
+
+    private func completeAnswer(_ action: CXAnswerCallAction) {
+        if sipManager?.answerIncomingCall() ?? false {
+            action.fulfill()
+        } else {
+            // La chiamata non esiste più (es. il chiamante ha riagganciato prima
+            // che il tocco su "Rispondi" venisse processato): fallire l'azione
+            // evita che CallKit mostri una schermata "in chiamata" vuota con
+            // timer che avanza all'infinito.
+            action.fail()
+            clearActiveCall()
+        }
     }
 
     func provider(_ provider: CXProvider, perform action: CXEndCallAction) {

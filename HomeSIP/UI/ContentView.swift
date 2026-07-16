@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var sipManager = SIPManager()
+    @ObservedObject private var sipManager = SIPManager.shared
     @State private var destination: String = "100"
 
     var body: some View {
@@ -21,7 +21,7 @@ struct ContentView: View {
 
     private var idleView: some View {
         VStack(spacing: 20) {
-            Text("HomeSIP — M1")
+            Text("HomeSIP — M2")
                 .font(.title2.bold())
 
             GroupBox("Stato registrazione") {
@@ -59,6 +59,9 @@ struct ContentView: View {
                 .foregroundStyle(.secondary)
             Spacer()
 
+            #if targetEnvironment(simulator)
+            // Sul simulatore CallKit è bypassato (vedi CallManager): questi
+            // pulsanti sono l'unico modo di rispondere/rifiutare.
             HStack(spacing: 60) {
                 Button {
                     CallManager.shared.endCall()
@@ -81,6 +84,16 @@ struct ContentView: View {
                 }
             }
             .padding(.bottom, 40)
+            #else
+            // Su device reale la risposta passa SOLO dalla UI di sistema di
+            // CallKit: un secondo tentativo di risposta da qui accetterebbe
+            // due volte la stessa chiamata (Linphone la termina con un errore
+            // "operation not permitted" se già connessa).
+            Text("Rispondi dalla schermata di chiamata di iOS")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .padding(.bottom, 40)
+            #endif
         }
         .padding()
     }

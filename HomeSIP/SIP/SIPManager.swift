@@ -10,6 +10,10 @@ import linphonesw
 /// milestone successiva (vedi PIANO_SVILUPPO.md).
 final class SIPManager: ObservableObject {
 
+    /// Singleton: deve poter essere avviato da AppDelegate (risveglio in
+    /// background su VoIP push) indipendentemente dal ciclo di vita delle view.
+    static let shared = SIPManager()
+
     @Published var registrationState: String = "Non avviato"
     @Published var callState: String = "Nessuna chiamata"
     @Published var isCallActive: Bool = false
@@ -25,6 +29,8 @@ final class SIPManager: ObservableObject {
     private var iterateTimer: Timer?
 
     func start() {
+        guard core == nil else { return } // già avviato (es. da AppDelegate e poi da ContentView)
+
         CallManager.shared.sipManager = self
 
         do {
@@ -46,6 +52,12 @@ final class SIPManager: ObservableObject {
                 onAccountRegistrationStateChanged: { [weak self] _, account, state, message in
                     DispatchQueue.main.async {
                         self?.registrationState = "\(state) — \(message)"
+                    }
+                    if state == .Ok {
+                        // Sblocca eventuali chiamate che il push relay sta
+                        // trattenendo in Stasis in attesa che l'app si
+                        // ri-registri dopo un risveglio da VoIP push.
+                        PushRelayClient.shared.notifyDeviceReady()
                     }
                 }
             )
@@ -150,13 +162,30 @@ final class SIPManager: ObservableObject {
         }
     }
 
-    func answerIncomingCall() {
-        guard let core, let call = core.currentCall else { return }
+    /// Ritorna false se non c'è più una chiamata reale a cui rispondere (es. il
+    /// chiamante ha già riagganciato) o se l'accettazione fallisce: in quel caso
+    /// CallManager deve dire a CallKit che la risposta è fallita, non fulfillarla
+    /// — altrimenti iOS mostra una schermata "in chiamata" con timer che avanza
+    /// per una chiamata che non esiste più.
+    @discardableResult
+    func answerIncomingCall() -> Bool {
+        guard let core, let call = core.currentCall else { return false }
+
+        // Se la chiamata è già stata accettata (es. doppio tentativo di risposta),
+        // Linphone rifiuta un secondo accept con un errore che termina la sessione:
+        // qui trattiamo lo stato "già connessa" come successo, non come richiesta
+        // da rieseguire.
+        guard call.state == .IncomingReceived else {
+            return call.state == .Connected || call.state == .StreamsRunning
+        }
+
         do {
             let params = try core.createCallParams(call: call)
             try call.acceptWithParams(params: params)
+            return true
         } catch {
             callState = "Errore risposta: \(error)"
+            return false
         }
     }
 
