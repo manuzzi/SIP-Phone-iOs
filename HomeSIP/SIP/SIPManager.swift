@@ -1,6 +1,7 @@
 import Foundation
 import Network
 import os
+import WidgetKit
 import linphonesw
 
 private let logger = Logger(subsystem: "work.manuzzi.homesip", category: "SIPManager")
@@ -91,6 +92,21 @@ final class SIPManager: ObservableObject {
                     DebugFileLogger.log("stato registrazione -> \(state) — \(message)")
                     DispatchQueue.main.async {
                         self?.registrationState = "\(state) — \(message)"
+                    }
+
+                    // M5.1: lo stato va condiviso con le estensioni
+                    // widget/controllo (che non vedono lo stato interno di
+                    // SIPManager) e va sollecitato un refresh, perché
+                    // WidgetKit non ha modo di sapere da solo che qualcosa
+                    // è cambiato nel frattempo.
+                    SharedStatus.write(
+                        registrationState: "\(state) — \(message)",
+                        isReachable: state == .Ok,
+                        domain: SIPSettings.domain
+                    )
+                    WidgetCenter.shared.reloadAllTimelines()
+                    if #available(iOS 18.0, *) {
+                        ControlCenter.shared.reloadAllControls()
                     }
                     if state == .Ok {
                         self?.hasNotifiedUnreachable = false

@@ -101,6 +101,30 @@ invece di indovinare un tempo di attesa fisso — vedi dettaglio più sotto.
 
 **Percorso reale (per riferimento futuro):** il blocco su "Progress" durante il passaggio WiFi→VPN ad app aperta ha richiesto tre tentativi. 1) `core.networkReachable` (l'API ufficiale di Linphone per questo scenario) da solo non bastava — restava bloccata comunque. 2) Un riavvio completo del Core (`stopAsync`+`start`, per replicare esattamente il comportamento di chiudere e riaprire l'app, che funzionava sempre) risolveva il blocco ma **rompeva transizioni che già funzionavano** (VPN→WiFi) — troppo invasivo, scartato su segnalazione dell'utente. 3) La causa di fondo, indicata dall'utente: il trigger "il percorso di rete è cambiato" non garantisce che il server sia già raggiungibile in quel momento — una VPN può impiegare 2-3s per negoziare dopo che l'interfaccia risulta già "up" per il sistema. La soluzione corretta non è indovinare un'attesa (prima 2s, poi 5s: nessuna delle due andava bene per forza), ma **verificare la raggiungibilità reale** prima di agire: `ServerReachabilityProbe` apre una connessione TCP di prova verso il server e solo a esito positivo innesca il meccanismo leggero di `networkReachable`/`refreshRegisters()` di prima. Anche un bug nel watchdog di sicurezza è emerso in questo percorso: si resettava ad ogni notifica "Progress" ripetuta invece di scattare una sola volta, quindi non scattava mai se le notifiche arrivavano più spesso della finestra d'attesa.
 
+### M5.1 — Widget di stato (Home Screen, Lock Screen, Centro di Controllo) ✅ implementata (da validare sul dispositivo)
+Obiettivo: vedere a colpo d'occhio se HomeSIP è registrato e se Asterisk è raggiungibile, senza aprire l'app.
+
+**Perché non è banale:** un widget gira in un'estensione separata, a vita breve, che non può mantenere una registrazione SIP propria — la sfida vera è capire da dove il widget prende lo stato da mostrare, non come disegnarlo.
+
+**Strategia dati (combinazione, come scelto):**
+- `SharedStatus` (App Group `group.work.manuzzi.homesip`): `SIPManager` scrive stato di registrazione, raggiungibilità, timestamp e dominio SIP ad ogni cambio di stato, e chiama `WidgetCenter.shared.reloadAllTimelines()` (+ `ControlCenter.shared.reloadAllControls()` su iOS 18+) per sollecitare un refresh immediato.
+- Se l'ultimo aggiornamento nell'App Group è più vecchio di 8 minuti, il widget stesso esegue una sonda di riserva (`ServerReachabilityProbe`, già scritta per M5, riusata senza modifiche) e marca l'esito come "verificato ora" invece che "dall'app".
+- Il dominio SIP (`SIPSettings.domain`, altrimenti solo in `UserDefaults.standard` dell'app principale, invisibile alle estensioni) viene rispecchiato nell'App Group apposta per questo.
+
+**Scoperta utile in fase di implementazione:** i Controlli del Centro di Controllo (iOS 18+) **non richiedono un'estensione separata** — `WidgetBundleBuilder` ha un overload dedicato (`buildExpression<Content>(_:) where Content: ControlWidget`) che li accetta nello stesso `WidgetBundle` dei widget classici. Un solo target (`HomeSIPWidgets`) copre tutte e tre le superfici, verificato contro l'interfaccia reale dell'SDK (SwiftUI/WidgetKit/AppIntents) prima di scrivere il codice.
+
+**Realizzato:**
+- `HomeSIPWidgets` (estensione WidgetKit, bundle `work.manuzzi.homesip.widgets`), un solo target per tutto
+- Widget Home Screen (`.systemSmall`) + Lock Screen (`.accessoryCircular`/`.accessoryRectangular`, guardato `if #available(iOS 16.0, *)`)
+- Controllo Centro di Controllo (`StaticControlConfiguration` + `ControlWidgetButton` con un `AppIntent` che apre l'app via `openAppWhenRun`), guardato `@available(iOS 18.0, *)`
+- App Group capability su app principale ed estensione — **provisionata automaticamente senza intervento manuale** (a differenza della capability Siri di M4, che aveva richiesto la creazione manuale dell'App ID sul portale)
+
+**Validazione (da fare sul dispositivo, azione manuale utente):**
+- Impostazioni > tocco prolungato su Home Screen > "+" > HomeSIP, per aggiungere il widget Home Screen
+- Impostazioni schermata di blocco > tocco prolungato > Personalizza > aggiungere il widget Lock Screen
+- Impostazioni > Centro di Controllo > aggiungere il controllo HomeSIP (richiede iOS 18+)
+- Verificare che lo stato mostrato rifletta quello reale, che si aggiorni dopo un cambio di stato con l'app aperta, e che toccando il widget/controllo si apra l'app
+
 ### M6 — Opzionale, solo se si decide di procedere verso l'App Store
 - Rimozione di eventuali residui hardcoded
 - Risoluzione della questione di licenza SDK (GPL vs licenza commerciale Belledonne)

@@ -39,6 +39,8 @@ targets:
       properties:
         aps-environment: development
         com.apple.developer.siri: true
+        com.apple.security.application-groups:
+          - group.work.manuzzi.homesip
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: work.manuzzi.homesip
@@ -52,6 +54,8 @@ targets:
       - package: LinphoneSDK
         product: linphonesw
       - target: HomeSIPIntents
+        embed: true
+      - target: HomeSIPWidgets
         embed: true
 
   HomeSIPIntents:
@@ -77,6 +81,34 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: work.manuzzi.homesip.intents
         PRODUCT_NAME: HomeSIPIntents
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: WQZGRLXS8K
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        SKIP_INSTALL: true
+
+  HomeSIPWidgets:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: HomeSIPWidgets
+      - path: HomeSIP/SIP/SharedStatus.swift
+      - path: HomeSIP/SIP/ServerReachabilityProbe.swift
+    info:
+      path: HomeSIPWidgets/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: HomeSIPWidgets/HomeSIPWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.work.manuzzi.homesip
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: work.manuzzi.homesip.widgets
+        PRODUCT_NAME: HomeSIPWidgets
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: WQZGRLXS8K
         SWIFT_VERSION: "5.0"

@@ -15,22 +15,27 @@
 		2F9B44D8C1502A43A14A5467 /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C084B057C1A1F9FF5B7F4FBB /* CallManager.swift */; };
 		30B084DE6C9EB8E1422594E4 /* dtmf_7.wav in Resources */ = {isa = PBXBuildFile; fileRef = 97C05195EC7B1DE0CB39AD74 /* dtmf_7.wav */; };
 		317034720EBF502082D5E54A /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACCD79BBE9235B8E3D2A97B /* NotificationManager.swift */; };
+		34C6F601754BB315B5D841A4 /* HomeSIPStatusControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6169679CE68D2B79B678AA5 /* HomeSIPStatusControl.swift */; };
 		37082501BFA15F656F5F81F8 /* SIPSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727F37305A352CA618C15083 /* SIPSettings.swift */; };
 		3E13E3B5083AFFB6C939A712 /* HomeSIPIntents.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BEA957FC675BD17A6BA99AB8 /* HomeSIPIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		401CF9E3C83EF7DEA36F16C4 /* dtmf_8.wav in Resources */ = {isa = PBXBuildFile; fileRef = ED3F1D540435C60F8C60A202 /* dtmf_8.wav */; };
 		443C175A9E15BD87E352F8CB /* linphonesw in Frameworks */ = {isa = PBXBuildFile; productRef = 5C03D9577D4BAB2D9E279B37 /* linphonesw */; };
 		4D72FC5826581AC2E4ECBCA0 /* PushRelayConfig.swift.example in Resources */ = {isa = PBXBuildFile; fileRef = 761BC420FAB89239634DCF7F /* PushRelayConfig.swift.example */; };
+		5752DF468976E6FB651B2B6B /* SharedStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53CFFAD4AB1F90DBCDC0F39 /* SharedStatus.swift */; };
 		59C6FFF9AA6B4273120B24B4 /* dtmf_0.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2F3E5DCCD1AE4B361043EC00 /* dtmf_0.wav */; };
 		5EB220BCC388C29C653E1540 /* dtmf_4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 84586019ACE9D429DDA75349 /* dtmf_4.wav */; };
 		5EF161B638E1569B51EBE602 /* CallHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D564F26C30DE769576BC8FB4 /* CallHistoryStore.swift */; };
 		6631AA634C9B8A177AEF603B /* dtmf_star.wav in Resources */ = {isa = PBXBuildFile; fileRef = 692AB39C949F3B952F12950F /* dtmf_star.wav */; };
 		67C70E93AEC6272DBFBCE48A /* dtmf_9.wav in Resources */ = {isa = PBXBuildFile; fileRef = 77565B1E678B380BFBE4E513 /* dtmf_9.wav */; };
 		6814F426E5960ECD60BF06FF /* dtmf_5.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8BE63F22AF2FCA5430DEEF81 /* dtmf_5.wav */; };
+		6D487BBB05FBB8681F52533C /* ServerReachabilityProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E56B2D3FCCF724F2BD030F /* ServerReachabilityProbe.swift */; };
+		6D5CD2EC584380B95AD60D97 /* SharedStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53CFFAD4AB1F90DBCDC0F39 /* SharedStatus.swift */; };
 		76441B99021660E966094FE8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21A6D477961E08300B6874C /* AppDelegate.swift */; };
 		795DFDF481A1299B4A996612 /* DTMFTonePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384AC6ED248DCBC54E753C72 /* DTMFTonePlayer.swift */; };
 		8333E79C62FACC1B4B4C829C /* SIPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E071771C4F3447EECB7FD78 /* SIPManager.swift */; };
 		895B2965EBA5E1AC2A3FE009 /* PushRelayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FD10776FF96A8E3D0095FA /* PushRelayConfig.swift */; };
 		9061E082FEFFDB54B3E84CAE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4890E33FF0C3AAC6227EB326 /* Settings.bundle */; };
+		91EFF9FFD44CEF081D8E707C /* HomeSIPWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3725D8BDD53DBD278032CDE6 /* HomeSIPWidgetsBundle.swift */; };
 		94797C4CADABBA091A393A90 /* PhoneKeypadLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DAEA03F07392C809CCEF8CA /* PhoneKeypadLayout.swift */; };
 		9CE02872A164F28F543865F3 /* HomeSIPApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E6573BD5FA8B066B0DA40A /* HomeSIPApp.swift */; };
 		AC6B2FA4C5966B7BE6A40ACD /* DialerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3A0C4CFFA5968B4E1A4968 /* DialerView.swift */; };
@@ -38,7 +43,9 @@
 		B2861CFA009BF9F0B6AC0BBC /* CallHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE8976938C2D9E7BB485E1D /* CallHistoryView.swift */; };
 		C05F3215BCA57CD88AB013C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4494D7B24F0EEDF3FD6BFD17 /* Assets.xcassets */; };
 		C1C95F81B1C3B767F7E4B539 /* dtmf_2.wav in Resources */ = {isa = PBXBuildFile; fileRef = DC0BC144B62BFAB8C6795950 /* dtmf_2.wav */; };
+		C7B2BE57732B80DEEDADC21F /* HomeSIPWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E441B4A04868213F422B70AF /* HomeSIPWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D4C7B4D59BA0A0B0DF5E97A3 /* dtmf_pound.wav in Resources */ = {isa = PBXBuildFile; fileRef = C418066878577AEC41FAD42C /* dtmf_pound.wav */; };
+		D8B3F60D6502E5D9604EA14F /* HomeSIPStatusWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809D6BFED9B54E3554CF5D72 /* HomeSIPStatusWidget.swift */; };
 		D8C2D7EDA9561E95C7ADB52A /* PushRelayClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D3AD3FB7B28AE112D604FD /* PushRelayClient.swift */; };
 		E17568811B45811C48361958 /* dtmf_6.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3326444B2920FE11AB08A2C7 /* dtmf_6.wav */; };
 		E8ADA58E667909E7E506065B /* DebugFileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68AA58347C70B61BAB83C70D /* DebugFileLogger.swift */; };
@@ -46,6 +53,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8376D9F705DC55EC6707A747 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6E90F7E5F19DD776F4BA1B36 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E05E1FBA136DC521FED2BDF5;
+			remoteInfo = HomeSIPWidgets;
+		};
 		B94E40DE9E67E69F6FCB6D1F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6E90F7E5F19DD776F4BA1B36 /* Project object */;
@@ -63,6 +77,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				3E13E3B5083AFFB6C939A712 /* HomeSIPIntents.appex in Embed Foundation Extensions */,
+				C7B2BE57732B80DEEDADC21F /* HomeSIPWidgets.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,14 +89,17 @@
 		12EC746D339E3535E929C8EE /* CallDonationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallDonationManager.swift; sourceTree = "<group>"; };
 		25E92E0D0D18501A81598FEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		28D3AD3FB7B28AE112D604FD /* PushRelayClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRelayClient.swift; sourceTree = "<group>"; };
+		2AE0C5331694BE1846DD228C /* HomeSIPWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeSIPWidgets.entitlements; sourceTree = "<group>"; };
 		2F3E5DCCD1AE4B361043EC00 /* dtmf_0.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_0.wav; sourceTree = "<group>"; };
 		3326444B2920FE11AB08A2C7 /* dtmf_6.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_6.wav; sourceTree = "<group>"; };
+		3725D8BDD53DBD278032CDE6 /* HomeSIPWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSIPWidgetsBundle.swift; sourceTree = "<group>"; };
 		384AC6ED248DCBC54E753C72 /* DTMFTonePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTMFTonePlayer.swift; sourceTree = "<group>"; };
 		3ACCD79BBE9235B8E3D2A97B /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		4494D7B24F0EEDF3FD6BFD17 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		466B73744E5CA8F98D89456F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4890E33FF0C3AAC6227EB326 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = wrapper.cfbundle; path = Settings.bundle; sourceTree = "<group>"; };
 		4B35FF8BFA45E872DA391ADD /* CallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallView.swift; sourceTree = "<group>"; };
+		5839B324FFD4F517910D3ADE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		68AA58347C70B61BAB83C70D /* DebugFileLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugFileLogger.swift; sourceTree = "<group>"; };
 		692AB39C949F3B952F12950F /* dtmf_star.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_star.wav; sourceTree = "<group>"; };
 		6F3A0C4CFFA5968B4E1A4968 /* DialerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialerView.swift; sourceTree = "<group>"; };
@@ -90,6 +108,7 @@
 		761BC420FAB89239634DCF7F /* PushRelayConfig.swift.example */ = {isa = PBXFileReference; path = PushRelayConfig.swift.example; sourceTree = "<group>"; };
 		77565B1E678B380BFBE4E513 /* dtmf_9.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_9.wav; sourceTree = "<group>"; };
 		7E29CCFE634527EA9C30CA28 /* dtmf_3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_3.wav; sourceTree = "<group>"; };
+		809D6BFED9B54E3554CF5D72 /* HomeSIPStatusWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSIPStatusWidget.swift; sourceTree = "<group>"; };
 		84586019ACE9D429DDA75349 /* dtmf_4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_4.wav; sourceTree = "<group>"; };
 		85D16B29E71AE9912E1BD2C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		86B229F43EABB27F3BC924EC /* dtmf_1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_1.wav; sourceTree = "<group>"; };
@@ -98,6 +117,7 @@
 		8DAEA03F07392C809CCEF8CA /* PhoneKeypadLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneKeypadLayout.swift; sourceTree = "<group>"; };
 		92B22CEAD24D0FCD31F3A5B0 /* HomeSIPIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeSIPIntents.entitlements; sourceTree = "<group>"; };
 		97C05195EC7B1DE0CB39AD74 /* dtmf_7.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_7.wav; sourceTree = "<group>"; };
+		B53CFFAD4AB1F90DBCDC0F39 /* SharedStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedStatus.swift; sourceTree = "<group>"; };
 		B6E56B2D3FCCF724F2BD030F /* ServerReachabilityProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerReachabilityProbe.swift; sourceTree = "<group>"; };
 		BEA957FC675BD17A6BA99AB8 /* HomeSIPIntents.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = HomeSIPIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C084B057C1A1F9FF5B7F4FBB /* CallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
@@ -108,6 +128,8 @@
 		D8FD10776FF96A8E3D0095FA /* PushRelayConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRelayConfig.swift; sourceTree = "<group>"; };
 		DAE8976938C2D9E7BB485E1D /* CallHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallHistoryView.swift; sourceTree = "<group>"; };
 		DC0BC144B62BFAB8C6795950 /* dtmf_2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_2.wav; sourceTree = "<group>"; };
+		E441B4A04868213F422B70AF /* HomeSIPWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = HomeSIPWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E6169679CE68D2B79B678AA5 /* HomeSIPStatusControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSIPStatusControl.swift; sourceTree = "<group>"; };
 		ED3F1D540435C60F8C60A202 /* dtmf_8.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_8.wav; sourceTree = "<group>"; };
 		F21A6D477961E08300B6874C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -141,6 +163,7 @@
 			children = (
 				7592E17B17E9B93B168AA6E0 /* HomeSIP.app */,
 				BEA957FC675BD17A6BA99AB8 /* HomeSIPIntents.appex */,
+				E441B4A04868213F422B70AF /* HomeSIPWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -158,6 +181,18 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
+		432AB530E3A24D83D56DC75C /* HomeSIPWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				E6169679CE68D2B79B678AA5 /* HomeSIPStatusControl.swift */,
+				809D6BFED9B54E3554CF5D72 /* HomeSIPStatusWidget.swift */,
+				2AE0C5331694BE1846DD228C /* HomeSIPWidgets.entitlements */,
+				3725D8BDD53DBD278032CDE6 /* HomeSIPWidgetsBundle.swift */,
+				5839B324FFD4F517910D3ADE /* Info.plist */,
+			);
+			path = HomeSIPWidgets;
+			sourceTree = "<group>";
+		};
 		BEB3D89D5C0BB95E5B946E58 /* SIP */ = {
 			isa = PBXGroup;
 			children = (
@@ -170,6 +205,7 @@
 				D8FD10776FF96A8E3D0095FA /* PushRelayConfig.swift */,
 				761BC420FAB89239634DCF7F /* PushRelayConfig.swift.example */,
 				B6E56B2D3FCCF724F2BD030F /* ServerReachabilityProbe.swift */,
+				B53CFFAD4AB1F90DBCDC0F39 /* SharedStatus.swift */,
 				0E071771C4F3447EECB7FD78 /* SIPManager.swift */,
 				727F37305A352CA618C15083 /* SIPSettings.swift */,
 			);
@@ -191,6 +227,7 @@
 			children = (
 				106511860F51A3AA681BDC8B /* HomeSIP */,
 				C28E827C25130B746C010E67 /* HomeSIPIntents */,
+				432AB530E3A24D83D56DC75C /* HomeSIPWidgets */,
 				F9FD70F5079BB061E052A447 /* Resources */,
 				2A4356B708DB308799A36C04 /* Products */,
 			);
@@ -251,6 +288,7 @@
 			);
 			dependencies = (
 				570B669BD621A3C50C793584 /* PBXTargetDependency */,
+				979EA6C64888FAB05D44C6B6 /* PBXTargetDependency */,
 			);
 			name = HomeSIP;
 			packageProductDependencies = (
@@ -277,6 +315,23 @@
 			productReference = BEA957FC675BD17A6BA99AB8 /* HomeSIPIntents.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		E05E1FBA136DC521FED2BDF5 /* HomeSIPWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D055F83910AB67EA9D7D02A9 /* Build configuration list for PBXNativeTarget "HomeSIPWidgets" */;
+			buildPhases = (
+				9E500EDC3944C9A65A1E8602 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HomeSIPWidgets;
+			packageProductDependencies = (
+			);
+			productName = HomeSIPWidgets;
+			productReference = E441B4A04868213F422B70AF /* HomeSIPWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -291,6 +346,10 @@
 						ProvisioningStyle = Automatic;
 					};
 					A6D79E03E3D311C0FA47C1A8 = {
+						DevelopmentTeam = WQZGRLXS8K;
+						ProvisioningStyle = Automatic;
+					};
+					E05E1FBA136DC521FED2BDF5 = {
 						DevelopmentTeam = WQZGRLXS8K;
 						ProvisioningStyle = Automatic;
 					};
@@ -315,6 +374,7 @@
 			targets = (
 				5CF33AAF5B80155101B14940 /* HomeSIP */,
 				A6D79E03E3D311C0FA47C1A8 /* HomeSIPIntents */,
+				E05E1FBA136DC521FED2BDF5 /* HomeSIPWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -353,6 +413,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9E500EDC3944C9A65A1E8602 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				34C6F601754BB315B5D841A4 /* HomeSIPStatusControl.swift in Sources */,
+				D8B3F60D6502E5D9604EA14F /* HomeSIPStatusWidget.swift in Sources */,
+				91EFF9FFD44CEF081D8E707C /* HomeSIPWidgetsBundle.swift in Sources */,
+				6D487BBB05FBB8681F52533C /* ServerReachabilityProbe.swift in Sources */,
+				5752DF468976E6FB651B2B6B /* SharedStatus.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C638F73634D0DA7872E2E00A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -375,6 +447,7 @@
 				8333E79C62FACC1B4B4C829C /* SIPManager.swift in Sources */,
 				37082501BFA15F656F5F81F8 /* SIPSettings.swift in Sources */,
 				10D26BBD3ED3B398BB706F60 /* ServerReachabilityProbe.swift in Sources */,
+				6D5CD2EC584380B95AD60D97 /* SharedStatus.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,6 +458,11 @@
 			isa = PBXTargetDependency;
 			target = A6D79E03E3D311C0FA47C1A8 /* HomeSIPIntents */;
 			targetProxy = B94E40DE9E67E69F6FCB6D1F /* PBXContainerItemProxy */;
+		};
+		979EA6C64888FAB05D44C6B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E05E1FBA136DC521FED2BDF5 /* HomeSIPWidgets */;
+			targetProxy = 8376D9F705DC55EC6707A747 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -404,6 +482,28 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = work.manuzzi.homesip.intents;
 				PRODUCT_NAME = HomeSIPIntents;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		832B65712B536CF78534C073 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = HomeSIPWidgets/HomeSIPWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WQZGRLXS8K;
+				INFOPLIST_FILE = HomeSIPWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = work.manuzzi.homesip.widgets;
+				PRODUCT_NAME = HomeSIPWidgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -574,6 +674,28 @@
 			};
 			name = Debug;
 		};
+		E3D60EF1171071CBC1D8C6A9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = HomeSIPWidgets/HomeSIPWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WQZGRLXS8K;
+				INFOPLIST_FILE = HomeSIPWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = work.manuzzi.homesip.widgets;
+				PRODUCT_NAME = HomeSIPWidgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 		F03CAB9CE2A1DFFE5A9AC3E6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -613,6 +735,15 @@
 			buildConfigurations = (
 				871A7EB5453BA0444FF3D192 /* Debug */,
 				2B828AFDA4CE07C234248F8A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D055F83910AB67EA9D7D02A9 /* Build configuration list for PBXNativeTarget "HomeSIPWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E3D60EF1171071CBC1D8C6A9 /* Debug */,
+				832B65712B536CF78534C073 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
