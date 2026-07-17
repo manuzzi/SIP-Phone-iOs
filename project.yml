@@ -26,6 +26,8 @@ targets:
       path: HomeSIP/Info.plist
       properties:
         UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
         UIBackgroundModes:
           - audio
           - voip

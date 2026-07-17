@@ -27,6 +27,7 @@ struct DialerView: View {
                     .frame(width: 72, height: 72)
                     .background(Circle().fill(destination.isEmpty ? Color.gray : Color.green))
             }
+            .buttonStyle(.plain)
             .disabled(destination.isEmpty)
         }
     }
@@ -50,25 +51,29 @@ struct DialerView: View {
                         .font(.title3)
                         .foregroundStyle(.secondary)
                 }
+                .buttonStyle(.plain)
             }
         }
     }
 
     private func keyButton(_ key: PhoneKeypadLayout.Key) -> some View {
         Button {
+            DTMFTonePlayer.play(Character(key.digit))
             destination.append(key.digit)
         } label: {
             VStack(spacing: 2) {
                 Text(key.digit)
-                    .font(.system(size: 30))
+                    .font(.system(size: 34))
+                    .foregroundStyle(.primary)
                 Text(key.letters.isEmpty ? " " : key.letters)
                     .font(.system(size: 11, weight: .medium))
                     .tracking(1)
+                    .foregroundStyle(.secondary)
             }
             .frame(width: 76, height: 76)
-            .foregroundStyle(.primary)
-            .background(Circle().fill(Color(.secondarySystemBackground)))
+            .background(Circle().fill(Color(.systemGray5)))
         }
+        .buttonStyle(.plain)
     }
 }
 

@@ -51,6 +51,7 @@ struct CallView: View {
                         .frame(width: 72, height: 72)
                         .background(Circle().fill(.red))
                 }
+                .buttonStyle(.plain)
                 .padding(.bottom, 50)
             }
             .padding(.horizontal, 32)
@@ -103,6 +104,7 @@ struct CallView: View {
             Button("Nascondi tastierino") {
                 showKeypad = false
             }
+            .buttonStyle(.plain)
             .font(.system(size: 17))
             .foregroundStyle(.white.opacity(0.8))
             .padding(.top, 4)
@@ -112,6 +114,7 @@ struct CallView: View {
 
     private func dtmfKeyButton(_ key: PhoneKeypadLayout.Key) -> some View {
         Button {
+            DTMFTonePlayer.play(Character(key.digit))
             dialedDigits.append(key.digit)
             callManager.sendDTMF(Character(key.digit))
         } label: {
@@ -126,6 +129,7 @@ struct CallView: View {
             .foregroundStyle(.white)
             .background(Circle().fill(Color.white.opacity(0.18)))
         }
+        .buttonStyle(.plain)
     }
 
     private func iosButton(systemImage: String, active: Bool, action: @escaping () -> Void) -> some View {
@@ -136,6 +140,7 @@ struct CallView: View {
                 .frame(width: 68, height: 68)
                 .background(Circle().fill(active ? Color.white : Color.white.opacity(0.18)))
         }
+        .buttonStyle(.plain)
     }
 
     private func setSpeaker(_ on: Bool) {

@@ -88,19 +88,31 @@ final class SIPManager: ObservableObject {
                 onAccountRegistrationStateChanged: { [weak self] _, account, state, message in
                     logger.notice("stato registrazione -> \(String(describing: state), privacy: .public) — \(message, privacy: .public)")
                     print("SIPManager: stato registrazione -> \(state) — \(message)")
+                    DebugFileLogger.log("stato registrazione -> \(state) — \(message)")
                     DispatchQueue.main.async {
                         self?.registrationState = "\(state) — \(message)"
                     }
                     if state == .Ok {
                         self?.hasNotifiedUnreachable = false
+                        self?.cancelRegistrationWatchdog()
                         // Sblocca eventuali chiamate che il push relay sta
                         // trattenendo in Stasis in attesa che l'app si
                         // ri-registri dopo un risveglio da VoIP push.
                         PushRelayClient.shared.notifyDeviceReady()
-                    } else if state == .Failed, self?.hasNotifiedUnreachable == false {
-                        self?.hasNotifiedUnreachable = true
-                        CallHistoryStore.log(kind: .serverUnreachable, detail: message)
-                        NotificationManager.notifyServerUnreachable(detail: message)
+                    } else if state == .Failed {
+                        self?.cancelRegistrationWatchdog()
+                        if self?.hasNotifiedUnreachable == false {
+                            self?.hasNotifiedUnreachable = true
+                            CallHistoryStore.log(kind: .serverUnreachable, detail: message)
+                            NotificationManager.notifyServerUnreachable(detail: message)
+                        }
+                    } else if state == .Progress {
+                        // Rete su cui la registrazione era in corso il transito
+                        // (es. WiFi -> VPN) può lasciarla bloccata su "Progress"
+                        // a tempo indeterminato invece di fallire o riuscire: se
+                        // non si sblocca da sola entro un tempo ragionevole,
+                        // forziamo comunque un nuovo tentativo.
+                        self?.scheduleRegistrationWatchdog()
                     }
                 }
             )
@@ -143,20 +155,28 @@ final class SIPManager: ObservableObject {
                 guard let previous = self.lastPathSummary else {
                     logger.notice("path monitor avviato, percorso iniziale: \(summary, privacy: .public)")
                     print("SIPManager: path monitor avviato, percorso iniziale: \(summary)")
+                    DebugFileLogger.log("path monitor avviato, percorso iniziale: \(summary)")
                     return
                 }
                 guard previous != summary else { return }
                 logger.notice("percorso di rete cambiato: \(previous, privacy: .public) -> \(summary, privacy: .public), programmo ri-registrazione (debounce)")
                 print("SIPManager: percorso di rete cambiato: \(previous) -> \(summary), programmo ri-registrazione (debounce)")
+                DebugFileLogger.log("percorso di rete cambiato: \(previous) -> \(summary), programmo ri-registrazione (debounce)")
 
                 self.reregisterDebounceWorkItem?.cancel()
                 let workItem = DispatchWorkItem { [weak self] in
                     guard let self else { return }
-                    logger.notice("debounce scaduto, percorso stabile: forzo ri-registrazione")
-                    print("SIPManager: debounce scaduto, percorso stabile: forzo ri-registrazione")
-                    self.forceReregister()
+                    logger.notice("debounce scaduto, percorso stabile: verifico raggiungibilità prima di ri-registrare")
+                    print("SIPManager: debounce scaduto, percorso stabile: verifico raggiungibilità prima di ri-registrare")
+                    DebugFileLogger.log("debounce scaduto, percorso stabile: verifico raggiungibilità prima di ri-registrare")
+                    self.triggerReregisterWhenReachable()
                 }
                 self.reregisterDebounceWorkItem = workItem
+                // Il debounce serve solo ad assorbire percorsi transitori
+                // multipli ravvicinati (vedi sopra), non più ad "indovinare"
+                // il tempo di negoziazione della VPN: di quello si occupa
+                // ServerReachabilityProbe, che verifica la raggiungibilità
+                // reale del server invece di attendere un tempo fisso.
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: workItem)
             }
         }
@@ -167,23 +187,112 @@ final class SIPManager: ObservableObject {
     /// legato a un socket per un percorso non più valido, che scade solo
     /// dopo minuti con un errore di I/O invece di riprovare su uno nuovo.
     /// `networkReachable` è l'API ufficiale di Linphone per questo esatto
-    /// scenario (vedi doc del wrapper): a `false` chiude tutte le
-    /// connessioni di rete, a `true` fa riconnettere e ri-registrare tutti
-    /// gli account automaticamente — sostituisce un precedente workaround
-    /// (clonare gli AccountParams per disabilitare/riabilitare la
-    /// registrazione) che funzionava ma non era il meccanismo previsto.
+    /// scenario: a `false` chiude tutte le connessioni di rete, a `true` fa
+    /// riconnettere; `refreshRegisters()` forza esplicitamente una nuova
+    /// REGISTER anche per un account che si considera ancora a metà di una
+    /// transazione ormai orfana.
+    ///
+    /// Un riavvio completo del Core (stopAsync + start, come chiudere e
+    /// riaprire l'app) risolveva il blocco su "Progress" ma rompeva anche
+    /// transizioni che già funzionavano (es. VPN -> WiFi) — troppo invasivo.
+    /// La causa vera del blocco non è che questo meccanismo sia insufficiente
+    /// in sé, ma che scattava troppo presto: va invocato solo dopo aver
+    /// verificato che il server sia davvero raggiungibile (vedi
+    /// triggerReregisterWhenReachable), non su un timer indovinato.
     private func forceReregister() {
         guard let core else { return }
         core.networkReachable = false
         logger.notice("forceReregister: rete segnalata non raggiungibile, chiudo le connessioni")
         print("SIPManager: forceReregister: rete segnalata non raggiungibile, chiudo le connessioni")
+        DebugFileLogger.log("forceReregister: rete segnalata non raggiungibile, chiudo le connessioni")
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
             guard let self, let core = self.core else { return }
             core.networkReachable = true
-            logger.notice("forceReregister: rete segnalata raggiungibile, ri-registrazione automatica")
-            print("SIPManager: forceReregister: rete segnalata raggiungibile, ri-registrazione automatica")
+            core.refreshRegisters()
+            logger.notice("forceReregister: rete segnalata raggiungibile, ri-registrazione forzata")
+            print("SIPManager: forceReregister: rete segnalata raggiungibile, ri-registrazione forzata")
+            DebugFileLogger.log("forceReregister: rete segnalata raggiungibile, ri-registrazione forzata")
         }
+    }
+
+    /// Genera un numero univoco per ogni ciclo di verifica-poi-registra: se un
+    /// nuovo cambio di percorso arriva mentre un ciclo precedente sta ancora
+    /// ritentando la sonda, il vecchio ciclo si riconosce superato e si ferma
+    /// da solo, invece di finire per ri-registrare due volte o in ordine sbagliato.
+    private var reachabilityRetryGeneration = 0
+
+    /// Punto d'ingresso per qualunque motivo si voglia forzare una
+    /// ri-registrazione (cambio di percorso, watchdog): non lo fa subito,
+    /// verifica prima che il server sia davvero raggiungibile — questo evita
+    /// del tutto la finestra in cui un'interfaccia VPN risulta "up" per il
+    /// sistema qualche secondo prima che il tunnel abbia davvero finito di
+    /// negoziare (osservato: 2-3s), che è quello che lasciava la
+    /// registrazione bloccata su "Progress".
+    private func triggerReregisterWhenReachable() {
+        reachabilityRetryGeneration += 1
+        probeAndReregister(generation: reachabilityRetryGeneration, attempt: 1)
+    }
+
+    private func probeAndReregister(generation: Int, attempt: Int) {
+        guard generation == reachabilityRetryGeneration else { return } // superato da un cambio più recente
+        let domain = SIPSettings.domain
+        logger.notice("verifico raggiungibilità di \(domain, privacy: .public):5060 (tentativo \(attempt))")
+        print("SIPManager: verifico raggiungibilità di \(domain):5060 (tentativo \(attempt))")
+        DebugFileLogger.log("verifico raggiungibilità di \(domain):5060 (tentativo \(attempt))")
+
+        ServerReachabilityProbe.check(host: domain, port: 5060) { [weak self] reachable in
+            guard let self, generation == self.reachabilityRetryGeneration else { return }
+            DebugFileLogger.log("esito sonda tentativo \(attempt): \(reachable ? "raggiungibile" : "non raggiungibile")")
+            if reachable {
+                logger.notice("server raggiungibile, forzo ri-registrazione")
+                print("SIPManager: server raggiungibile, forzo ri-registrazione")
+                self.forceReregister()
+                return
+            }
+            guard attempt < 20 else {
+                // ~20s di tentativi (probe da 3s + 1s di pausa ciascuno): se
+                // il server non risponde ancora, un prossimo cambio di
+                // percorso o il watchdog sotto ritenteranno più avanti.
+                logger.notice("server non raggiungibile dopo vari tentativi, abbandono per ora")
+                print("SIPManager: server non raggiungibile dopo vari tentativi, abbandono per ora")
+                DebugFileLogger.log("server non raggiungibile dopo vari tentativi, abbandono per ora")
+                return
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                self?.probeAndReregister(generation: generation, attempt: attempt + 1)
+            }
+        }
+    }
+
+    /// Rete di sicurezza per quando la registrazione resta bloccata su
+    /// "Progress" più a lungo del ragionevole invece di risolversi in
+    /// Ok/Failed — capita anche quando il rilevamento del cambio di percorso
+    /// non scatta.
+    private var registrationWatchdogWorkItem: DispatchWorkItem?
+
+    private func scheduleRegistrationWatchdog() {
+        // Non va ri-programmato ad ogni singola notifica "Progress": Linphone
+        // può emetterne più di una per lo stesso tentativo (es. ad ogni
+        // ritrasmissione), e se ogni notifica cancellasse e riavviasse il
+        // timer, questo non scatterebbe mai finché le notifiche continuano
+        // ad arrivare più spesso della finestra di attesa.
+        guard registrationWatchdogWorkItem == nil else { return }
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            self.registrationWatchdogWorkItem = nil
+            logger.notice("watchdog registrazione: bloccata su Progress da troppo tempo, verifico raggiungibilità")
+            print("SIPManager: watchdog registrazione: bloccata su Progress da troppo tempo, verifico raggiungibilità")
+            DebugFileLogger.log("watchdog registrazione: bloccata su Progress da troppo tempo, verifico raggiungibilità")
+            self.triggerReregisterWhenReachable()
+        }
+        registrationWatchdogWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8, execute: workItem)
+    }
+
+    private func cancelRegistrationWatchdog() {
+        registrationWatchdogWorkItem?.cancel()
+        registrationWatchdogWorkItem = nil
     }
 
     private func registerAccount() throws {

@@ -51,6 +51,7 @@ struct ContentView: View {
                         Image(systemName: "clock.arrow.circlepath")
                             .foregroundStyle(.secondary)
                     }
+                    .buttonStyle(.plain)
                 }
             }
 

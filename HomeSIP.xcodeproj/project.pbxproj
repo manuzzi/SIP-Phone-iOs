@@ -7,16 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		10D26BBD3ED3B398BB706F60 /* ServerReachabilityProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E56B2D3FCCF724F2BD030F /* ServerReachabilityProbe.swift */; };
 		15E803B19FEBCBCCE5999DFE /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F62C21A39249FAF7F78B46 /* IntentHandler.swift */; };
 		1ADDD24E0D5F5B2F7A854D7C /* CallDonationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EC746D339E3535E929C8EE /* CallDonationManager.swift */; };
+		1D6FFDCAF6D730A7492561BC /* dtmf_3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7E29CCFE634527EA9C30CA28 /* dtmf_3.wav */; };
+		2C6B47B4D7BDD07432472A3C /* dtmf_1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 86B229F43EABB27F3BC924EC /* dtmf_1.wav */; };
 		2F9B44D8C1502A43A14A5467 /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C084B057C1A1F9FF5B7F4FBB /* CallManager.swift */; };
+		30B084DE6C9EB8E1422594E4 /* dtmf_7.wav in Resources */ = {isa = PBXBuildFile; fileRef = 97C05195EC7B1DE0CB39AD74 /* dtmf_7.wav */; };
 		317034720EBF502082D5E54A /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACCD79BBE9235B8E3D2A97B /* NotificationManager.swift */; };
 		37082501BFA15F656F5F81F8 /* SIPSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727F37305A352CA618C15083 /* SIPSettings.swift */; };
 		3E13E3B5083AFFB6C939A712 /* HomeSIPIntents.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BEA957FC675BD17A6BA99AB8 /* HomeSIPIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		401CF9E3C83EF7DEA36F16C4 /* dtmf_8.wav in Resources */ = {isa = PBXBuildFile; fileRef = ED3F1D540435C60F8C60A202 /* dtmf_8.wav */; };
 		443C175A9E15BD87E352F8CB /* linphonesw in Frameworks */ = {isa = PBXBuildFile; productRef = 5C03D9577D4BAB2D9E279B37 /* linphonesw */; };
 		4D72FC5826581AC2E4ECBCA0 /* PushRelayConfig.swift.example in Resources */ = {isa = PBXBuildFile; fileRef = 761BC420FAB89239634DCF7F /* PushRelayConfig.swift.example */; };
+		59C6FFF9AA6B4273120B24B4 /* dtmf_0.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2F3E5DCCD1AE4B361043EC00 /* dtmf_0.wav */; };
+		5EB220BCC388C29C653E1540 /* dtmf_4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 84586019ACE9D429DDA75349 /* dtmf_4.wav */; };
 		5EF161B638E1569B51EBE602 /* CallHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D564F26C30DE769576BC8FB4 /* CallHistoryStore.swift */; };
+		6631AA634C9B8A177AEF603B /* dtmf_star.wav in Resources */ = {isa = PBXBuildFile; fileRef = 692AB39C949F3B952F12950F /* dtmf_star.wav */; };
+		67C70E93AEC6272DBFBCE48A /* dtmf_9.wav in Resources */ = {isa = PBXBuildFile; fileRef = 77565B1E678B380BFBE4E513 /* dtmf_9.wav */; };
+		6814F426E5960ECD60BF06FF /* dtmf_5.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8BE63F22AF2FCA5430DEEF81 /* dtmf_5.wav */; };
 		76441B99021660E966094FE8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21A6D477961E08300B6874C /* AppDelegate.swift */; };
+		795DFDF481A1299B4A996612 /* DTMFTonePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384AC6ED248DCBC54E753C72 /* DTMFTonePlayer.swift */; };
 		8333E79C62FACC1B4B4C829C /* SIPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E071771C4F3447EECB7FD78 /* SIPManager.swift */; };
 		895B2965EBA5E1AC2A3FE009 /* PushRelayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FD10776FF96A8E3D0095FA /* PushRelayConfig.swift */; };
 		9061E082FEFFDB54B3E84CAE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4890E33FF0C3AAC6227EB326 /* Settings.bundle */; };
@@ -26,7 +37,11 @@
 		B15A4F9D2A622758CD6A083D /* CallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B35FF8BFA45E872DA391ADD /* CallView.swift */; };
 		B2861CFA009BF9F0B6AC0BBC /* CallHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE8976938C2D9E7BB485E1D /* CallHistoryView.swift */; };
 		C05F3215BCA57CD88AB013C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4494D7B24F0EEDF3FD6BFD17 /* Assets.xcassets */; };
+		C1C95F81B1C3B767F7E4B539 /* dtmf_2.wav in Resources */ = {isa = PBXBuildFile; fileRef = DC0BC144B62BFAB8C6795950 /* dtmf_2.wav */; };
+		D4C7B4D59BA0A0B0DF5E97A3 /* dtmf_pound.wav in Resources */ = {isa = PBXBuildFile; fileRef = C418066878577AEC41FAD42C /* dtmf_pound.wav */; };
 		D8C2D7EDA9561E95C7ADB52A /* PushRelayClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D3AD3FB7B28AE112D604FD /* PushRelayClient.swift */; };
+		E17568811B45811C48361958 /* dtmf_6.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3326444B2920FE11AB08A2C7 /* dtmf_6.wav */; };
+		E8ADA58E667909E7E506065B /* DebugFileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68AA58347C70B61BAB83C70D /* DebugFileLogger.swift */; };
 		F3603A2E53B7D965F54EEDA8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466B73744E5CA8F98D89456F /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,26 +74,41 @@
 		12EC746D339E3535E929C8EE /* CallDonationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallDonationManager.swift; sourceTree = "<group>"; };
 		25E92E0D0D18501A81598FEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		28D3AD3FB7B28AE112D604FD /* PushRelayClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRelayClient.swift; sourceTree = "<group>"; };
+		2F3E5DCCD1AE4B361043EC00 /* dtmf_0.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_0.wav; sourceTree = "<group>"; };
+		3326444B2920FE11AB08A2C7 /* dtmf_6.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_6.wav; sourceTree = "<group>"; };
+		384AC6ED248DCBC54E753C72 /* DTMFTonePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTMFTonePlayer.swift; sourceTree = "<group>"; };
 		3ACCD79BBE9235B8E3D2A97B /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		4494D7B24F0EEDF3FD6BFD17 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		466B73744E5CA8F98D89456F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4890E33FF0C3AAC6227EB326 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = wrapper.cfbundle; path = Settings.bundle; sourceTree = "<group>"; };
 		4B35FF8BFA45E872DA391ADD /* CallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallView.swift; sourceTree = "<group>"; };
+		68AA58347C70B61BAB83C70D /* DebugFileLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugFileLogger.swift; sourceTree = "<group>"; };
+		692AB39C949F3B952F12950F /* dtmf_star.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_star.wav; sourceTree = "<group>"; };
 		6F3A0C4CFFA5968B4E1A4968 /* DialerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialerView.swift; sourceTree = "<group>"; };
 		727F37305A352CA618C15083 /* SIPSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIPSettings.swift; sourceTree = "<group>"; };
 		7592E17B17E9B93B168AA6E0 /* HomeSIP.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = HomeSIP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		761BC420FAB89239634DCF7F /* PushRelayConfig.swift.example */ = {isa = PBXFileReference; path = PushRelayConfig.swift.example; sourceTree = "<group>"; };
+		77565B1E678B380BFBE4E513 /* dtmf_9.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_9.wav; sourceTree = "<group>"; };
+		7E29CCFE634527EA9C30CA28 /* dtmf_3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_3.wav; sourceTree = "<group>"; };
+		84586019ACE9D429DDA75349 /* dtmf_4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_4.wav; sourceTree = "<group>"; };
 		85D16B29E71AE9912E1BD2C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		86B229F43EABB27F3BC924EC /* dtmf_1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_1.wav; sourceTree = "<group>"; };
 		8735E8F13385FAE9C9FF0F72 /* HomeSIP.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeSIP.entitlements; sourceTree = "<group>"; };
+		8BE63F22AF2FCA5430DEEF81 /* dtmf_5.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_5.wav; sourceTree = "<group>"; };
 		8DAEA03F07392C809CCEF8CA /* PhoneKeypadLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneKeypadLayout.swift; sourceTree = "<group>"; };
 		92B22CEAD24D0FCD31F3A5B0 /* HomeSIPIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeSIPIntents.entitlements; sourceTree = "<group>"; };
+		97C05195EC7B1DE0CB39AD74 /* dtmf_7.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_7.wav; sourceTree = "<group>"; };
+		B6E56B2D3FCCF724F2BD030F /* ServerReachabilityProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerReachabilityProbe.swift; sourceTree = "<group>"; };
 		BEA957FC675BD17A6BA99AB8 /* HomeSIPIntents.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = HomeSIPIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C084B057C1A1F9FF5B7F4FBB /* CallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
+		C418066878577AEC41FAD42C /* dtmf_pound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_pound.wav; sourceTree = "<group>"; };
 		C9F62C21A39249FAF7F78B46 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		D564F26C30DE769576BC8FB4 /* CallHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallHistoryStore.swift; sourceTree = "<group>"; };
 		D7E6573BD5FA8B066B0DA40A /* HomeSIPApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSIPApp.swift; sourceTree = "<group>"; };
 		D8FD10776FF96A8E3D0095FA /* PushRelayConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRelayConfig.swift; sourceTree = "<group>"; };
 		DAE8976938C2D9E7BB485E1D /* CallHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallHistoryView.swift; sourceTree = "<group>"; };
+		DC0BC144B62BFAB8C6795950 /* dtmf_2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_2.wav; sourceTree = "<group>"; };
+		ED3F1D540435C60F8C60A202 /* dtmf_8.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_8.wav; sourceTree = "<group>"; };
 		F21A6D477961E08300B6874C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -122,6 +152,7 @@
 				4B35FF8BFA45E872DA391ADD /* CallView.swift */,
 				466B73744E5CA8F98D89456F /* ContentView.swift */,
 				6F3A0C4CFFA5968B4E1A4968 /* DialerView.swift */,
+				384AC6ED248DCBC54E753C72 /* DTMFTonePlayer.swift */,
 				8DAEA03F07392C809CCEF8CA /* PhoneKeypadLayout.swift */,
 			);
 			path = UI;
@@ -133,10 +164,12 @@
 				12EC746D339E3535E929C8EE /* CallDonationManager.swift */,
 				D564F26C30DE769576BC8FB4 /* CallHistoryStore.swift */,
 				C084B057C1A1F9FF5B7F4FBB /* CallManager.swift */,
+				68AA58347C70B61BAB83C70D /* DebugFileLogger.swift */,
 				3ACCD79BBE9235B8E3D2A97B /* NotificationManager.swift */,
 				28D3AD3FB7B28AE112D604FD /* PushRelayClient.swift */,
 				D8FD10776FF96A8E3D0095FA /* PushRelayConfig.swift */,
 				761BC420FAB89239634DCF7F /* PushRelayConfig.swift.example */,
+				B6E56B2D3FCCF724F2BD030F /* ServerReachabilityProbe.swift */,
 				0E071771C4F3447EECB7FD78 /* SIPManager.swift */,
 				727F37305A352CA618C15083 /* SIPSettings.swift */,
 			);
@@ -163,6 +196,25 @@
 			);
 			sourceTree = "<group>";
 		};
+		EA81AE7764A933DF41741A20 /* DTMFTones */ = {
+			isa = PBXGroup;
+			children = (
+				2F3E5DCCD1AE4B361043EC00 /* dtmf_0.wav */,
+				86B229F43EABB27F3BC924EC /* dtmf_1.wav */,
+				DC0BC144B62BFAB8C6795950 /* dtmf_2.wav */,
+				7E29CCFE634527EA9C30CA28 /* dtmf_3.wav */,
+				84586019ACE9D429DDA75349 /* dtmf_4.wav */,
+				8BE63F22AF2FCA5430DEEF81 /* dtmf_5.wav */,
+				3326444B2920FE11AB08A2C7 /* dtmf_6.wav */,
+				97C05195EC7B1DE0CB39AD74 /* dtmf_7.wav */,
+				ED3F1D540435C60F8C60A202 /* dtmf_8.wav */,
+				77565B1E678B380BFBE4E513 /* dtmf_9.wav */,
+				C418066878577AEC41FAD42C /* dtmf_pound.wav */,
+				692AB39C949F3B952F12950F /* dtmf_star.wav */,
+			);
+			path = DTMFTones;
+			sourceTree = "<group>";
+		};
 		ECF787A617418E43CA98C072 /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -177,6 +229,7 @@
 			children = (
 				4494D7B24F0EEDF3FD6BFD17 /* Assets.xcassets */,
 				4890E33FF0C3AAC6227EB326 /* Settings.bundle */,
+				EA81AE7764A933DF41741A20 /* DTMFTones */,
 			);
 			name = Resources;
 			path = HomeSIP/Resources;
@@ -274,6 +327,18 @@
 				C05F3215BCA57CD88AB013C3 /* Assets.xcassets in Resources */,
 				4D72FC5826581AC2E4ECBCA0 /* PushRelayConfig.swift.example in Resources */,
 				9061E082FEFFDB54B3E84CAE /* Settings.bundle in Resources */,
+				59C6FFF9AA6B4273120B24B4 /* dtmf_0.wav in Resources */,
+				2C6B47B4D7BDD07432472A3C /* dtmf_1.wav in Resources */,
+				C1C95F81B1C3B767F7E4B539 /* dtmf_2.wav in Resources */,
+				1D6FFDCAF6D730A7492561BC /* dtmf_3.wav in Resources */,
+				5EB220BCC388C29C653E1540 /* dtmf_4.wav in Resources */,
+				6814F426E5960ECD60BF06FF /* dtmf_5.wav in Resources */,
+				E17568811B45811C48361958 /* dtmf_6.wav in Resources */,
+				30B084DE6C9EB8E1422594E4 /* dtmf_7.wav in Resources */,
+				401CF9E3C83EF7DEA36F16C4 /* dtmf_8.wav in Resources */,
+				67C70E93AEC6272DBFBCE48A /* dtmf_9.wav in Resources */,
+				D4C7B4D59BA0A0B0DF5E97A3 /* dtmf_pound.wav in Resources */,
+				6631AA634C9B8A177AEF603B /* dtmf_star.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,6 +364,8 @@
 				2F9B44D8C1502A43A14A5467 /* CallManager.swift in Sources */,
 				B15A4F9D2A622758CD6A083D /* CallView.swift in Sources */,
 				F3603A2E53B7D965F54EEDA8 /* ContentView.swift in Sources */,
+				795DFDF481A1299B4A996612 /* DTMFTonePlayer.swift in Sources */,
+				E8ADA58E667909E7E506065B /* DebugFileLogger.swift in Sources */,
 				AC6B2FA4C5966B7BE6A40ACD /* DialerView.swift in Sources */,
 				9CE02872A164F28F543865F3 /* HomeSIPApp.swift in Sources */,
 				317034720EBF502082D5E54A /* NotificationManager.swift in Sources */,
@@ -307,6 +374,7 @@
 				895B2965EBA5E1AC2A3FE009 /* PushRelayConfig.swift in Sources */,
 				8333E79C62FACC1B4B4C829C /* SIPManager.swift in Sources */,
 				37082501BFA15F656F5F81F8 /* SIPSettings.swift in Sources */,
+				10D26BBD3ED3B398BB706F60 /* ServerReachabilityProbe.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
