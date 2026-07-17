@@ -75,6 +75,13 @@ invece di indovinare un tempo di attesa fisso — vedi dettaglio più sotto.
 - Test contro un risponditore automatico reale
 - **Validazione:** cifre riconosciute correttamente dal risponditore, nessun problema di timing o invii doppi — confermato dall'utente
 
+### M3.5 — Configurazione utente e revisione UI
+- Rimosso l'hardcoding dei parametri SIP (`SIPCredentials.swift`): ora configurabili in Impostazioni di sistema > HomeSIP (`Settings.bundle`/`Root.plist`), lette a runtime da `SIPSettings` (wrapper su `UserDefaults`)
+- Se l'account non è ancora configurato l'app mostra una schermata dedicata con link diretto a Impostazioni, invece di tentare una registrazione con credenziali vuote; al ritorno in foreground (`scenePhase`) ritenta automaticamente la registrazione
+- Dialer nella home ridisegnato in stile Telefono di iOS: tastierino numerico con lettere (`DialerView.swift`), cancellazione, pulsante di chiamata verde — layout condiviso con il tastierino DTMF in chiamata (`PhoneKeypadLayout.swift`)
+- Interfaccia durante la chiamata ridisegnata in stile Telefono di iOS: sfondo scuro, pulsanti circolari traslucidi, timer di durata chiamata, tastierino DTMF a schermo intero con log delle cifre inviate (`CallView.swift`)
+- **Validazione:** schermata "non configurato" e dialer verificati su simulatore; interfaccia in chiamata da validare in una chiamata reale su dispositivo fisico
+
 ### M4 — Integrazione con Contatti/Siri
 - Intents Extension (`INStartCallIntent`) per comparire come opzione di chiamata nei Contatti iOS
 - Chiamate visibili nei Recenti di sistema, comando Siri "Chiama [nome] con [App]"

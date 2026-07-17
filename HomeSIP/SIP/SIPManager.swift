@@ -5,13 +5,10 @@ import linphonesw
 
 private let logger = Logger(subsystem: "work.manuzzi.homesip", category: "SIPManager")
 
-/// Registrazione SIP e gestione delle chiamate verso l'interno di test (101).
-/// Le decisioni sull'interfaccia di sistema (schermata di chiamata, Recenti)
-/// sono delegate a CallManager: qui viviamo solo il livello SIP/RTP.
-///
-/// Credenziali hardcoded volutamente in SIPCredentials.swift (non versionato):
-/// verranno spostate in una schermata di configurazione persistita in una
-/// milestone successiva (vedi PIANO_SVILUPPO.md).
+/// Registrazione SIP e gestione delle chiamate. Le decisioni sull'interfaccia
+/// di sistema (schermata di chiamata, Recenti) sono delegate a CallManager:
+/// qui viviamo solo il livello SIP/RTP. Parametri account in SIPSettings
+/// (Impostazioni di sistema > HomeSIP, vedi Settings.bundle).
 final class SIPManager: ObservableObject {
 
     /// Singleton: deve poter essere avviato da AppDelegate (risveglio in
@@ -23,10 +20,10 @@ final class SIPManager: ObservableObject {
     @Published var isCallActive: Bool = false
     @Published var isIncomingRinging: Bool = false
     @Published var remoteDisplayName: String = ""
-
-    private let sipUsername = SIPCredentials.username
-    private let sipPassword = SIPCredentials.password
-    private let sipDomain = SIPCredentials.domain
+    @Published var isConfigured: Bool = SIPSettings.isConfigured
+    /// Istante in cui la chiamata corrente è diventata attiva (per il timer
+    /// di durata nella UI); nil finché non si esce dallo stato di squillo.
+    @Published var callConnectedAt: Date?
 
     private var core: Core!
     private var coreDelegate: CoreDelegateStub!
@@ -50,8 +47,19 @@ final class SIPManager: ObservableObject {
     // stabile per un breve intervallo.
     private var reregisterDebounceWorkItem: DispatchWorkItem?
 
+    /// Da richiamare anche quando l'app torna in primo piano: se al primo
+    /// avvio l'account non era ancora configurato (Impostazioni > HomeSIP),
+    /// questo permette di agganciare la registrazione non appena l'utente
+    /// imposta i parametri e torna nell'app, senza dover riavviarla.
     func start() {
-        guard core == nil else { return } // già avviato (es. da AppDelegate e poi da ContentView)
+        guard core == nil else { return } // già avviato
+
+        guard SIPSettings.isConfigured else {
+            isConfigured = false
+            registrationState = "Configura l'account SIP in Impostazioni"
+            return
+        }
+        isConfigured = true
 
         CallManager.shared.sipManager = self
 
@@ -177,22 +185,24 @@ final class SIPManager: ObservableObject {
 
     private func registerAccount() throws {
         let factory = Factory.Instance
+        let username = SIPSettings.username
+        let domain = SIPSettings.domain
 
         let authInfo = try factory.createAuthInfo(
-            username: sipUsername,
+            username: username,
             userid: "",
-            passwd: sipPassword,
+            passwd: SIPSettings.password,
             ha1: "",
             realm: "",
-            domain: sipDomain
+            domain: domain
         )
 
         let accountParams = try core.createAccountParams()
 
-        let identity = try factory.createAddress(addr: "sip:\(sipUsername)@\(sipDomain)")
+        let identity = try factory.createAddress(addr: "sip:\(username)@\(domain)")
         try accountParams.setIdentityaddress(newValue: identity)
 
-        let serverAddress = try factory.createAddress(addr: "sip:\(sipDomain)")
+        let serverAddress = try factory.createAddress(addr: "sip:\(domain)")
         // UDP fallisce sistematicamente su cellulare+WireGuard: Asterisk invia
         // sempre il 401 correttamente (verificato via pjsip logger), ma la
         // risposta non arriva mai al socket UDP "connesso" di belle-sip una
@@ -221,11 +231,21 @@ final class SIPManager: ObservableObject {
                 self.isCallActive = false
                 self.isIncomingRinging = false
                 self.remoteDisplayName = ""
+                self.callConnectedAt = nil
             case .IncomingReceived:
                 self.isCallActive = true
                 self.isIncomingRinging = true
                 if let addr = call.remoteAddress {
                     self.remoteDisplayName = addr.displayName ?? addr.username ?? addr.asStringUriOnly()
+                }
+            case .Connected, .StreamsRunning:
+                self.isCallActive = true
+                self.isIncomingRinging = false
+                if let addr = call.remoteAddress {
+                    self.remoteDisplayName = addr.displayName ?? addr.username ?? addr.asStringUriOnly()
+                }
+                if self.callConnectedAt == nil {
+                    self.callConnectedAt = Date()
                 }
             default:
                 self.isCallActive = true
@@ -258,7 +278,7 @@ final class SIPManager: ObservableObject {
     func placeCall(to destination: String) {
         guard let core else { return }
         do {
-            let address = try Factory.Instance.createAddress(addr: "sip:\(destination)@\(sipDomain)")
+            let address = try Factory.Instance.createAddress(addr: "sip:\(destination)@\(SIPSettings.domain)")
             let params = try core.createCallParams(call: nil)
             _ = core.inviteAddressWithParams(addr: address, params: params)
         } catch {

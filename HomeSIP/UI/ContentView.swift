@@ -1,8 +1,11 @@
 import SwiftUI
+import UIKit
 
 struct ContentView: View {
     @ObservedObject private var sipManager = SIPManager.shared
-    @State private var destination: String = "100"
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.openURL) private var openURL
+    @State private var destination: String = ""
 
     var body: some View {
         Group {
@@ -10,6 +13,8 @@ struct ContentView: View {
                 incomingCallView
             } else if sipManager.isCallActive {
                 CallView(sipManager: sipManager)
+            } else if !sipManager.isConfigured {
+                notConfiguredView
             } else {
                 idleView
             }
@@ -17,34 +22,55 @@ struct ContentView: View {
         .onAppear {
             sipManager.start()
         }
+        .onChange(of: scenePhase) { phase in
+            // Copre il caso in cui l'utente configuri l'account in Impostazioni
+            // di sistema e torni nell'app senza doverla riavviare.
+            if phase == .active {
+                sipManager.start()
+            }
+        }
     }
 
     private var idleView: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 12) {
             Text("HomeSIP — M3")
-                .font(.title2.bold())
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            Text(sipManager.registrationState)
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
 
-            GroupBox("Stato registrazione") {
-                Text(sipManager.registrationState)
-                    .font(.footnote)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
+            Spacer(minLength: 8)
 
-            GroupBox("Stato chiamata") {
-                Text(sipManager.callState)
-                    .font(.footnote)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-
-            TextField("Interno o numero da chiamare", text: $destination)
-                .textFieldStyle(.roundedBorder)
-                .keyboardType(.phonePad)
-
-            Button("Chiama") {
+            DialerView(destination: $destination) {
+                guard !destination.isEmpty else { return }
                 CallManager.shared.startCall(to: destination)
             }
-            .buttonStyle(.borderedProminent)
 
+            Spacer(minLength: 8)
+        }
+        .padding()
+    }
+
+    private var notConfiguredView: some View {
+        VStack(spacing: 20) {
+            Spacer()
+            Image(systemName: "gearshape.fill")
+                .font(.system(size: 48))
+                .foregroundStyle(.secondary)
+            Text("Configura l'account SIP")
+                .font(.title2.bold())
+            Text("Vai su Impostazioni > HomeSIP e imposta interno, password e server, poi torna qui.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+            Button("Apri Impostazioni") {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    openURL(url)
+                }
+            }
+            .buttonStyle(.borderedProminent)
             Spacer()
         }
         .padding()

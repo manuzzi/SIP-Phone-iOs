@@ -8,17 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		2F9B44D8C1502A43A14A5467 /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C084B057C1A1F9FF5B7F4FBB /* CallManager.swift */; };
+		37082501BFA15F656F5F81F8 /* SIPSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727F37305A352CA618C15083 /* SIPSettings.swift */; };
 		443C175A9E15BD87E352F8CB /* linphonesw in Frameworks */ = {isa = PBXBuildFile; productRef = 5C03D9577D4BAB2D9E279B37 /* linphonesw */; };
 		4D72FC5826581AC2E4ECBCA0 /* PushRelayConfig.swift.example in Resources */ = {isa = PBXBuildFile; fileRef = 761BC420FAB89239634DCF7F /* PushRelayConfig.swift.example */; };
 		76441B99021660E966094FE8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21A6D477961E08300B6874C /* AppDelegate.swift */; };
 		8333E79C62FACC1B4B4C829C /* SIPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E071771C4F3447EECB7FD78 /* SIPManager.swift */; };
 		895B2965EBA5E1AC2A3FE009 /* PushRelayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FD10776FF96A8E3D0095FA /* PushRelayConfig.swift */; };
+		9061E082FEFFDB54B3E84CAE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4890E33FF0C3AAC6227EB326 /* Settings.bundle */; };
+		94797C4CADABBA091A393A90 /* PhoneKeypadLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DAEA03F07392C809CCEF8CA /* PhoneKeypadLayout.swift */; };
 		9CE02872A164F28F543865F3 /* HomeSIPApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E6573BD5FA8B066B0DA40A /* HomeSIPApp.swift */; };
-		A1CA181F8F35C27115D671FD /* SIPCredentials.swift.example in Resources */ = {isa = PBXBuildFile; fileRef = 7E7B53DD061D109892D490F8 /* SIPCredentials.swift.example */; };
+		AC6B2FA4C5966B7BE6A40ACD /* DialerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3A0C4CFFA5968B4E1A4968 /* DialerView.swift */; };
 		B15A4F9D2A622758CD6A083D /* CallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B35FF8BFA45E872DA391ADD /* CallView.swift */; };
 		C05F3215BCA57CD88AB013C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4494D7B24F0EEDF3FD6BFD17 /* Assets.xcassets */; };
 		D8C2D7EDA9561E95C7ADB52A /* PushRelayClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D3AD3FB7B28AE112D604FD /* PushRelayClient.swift */; };
-		E51B78FB23C230DDB3F3A729 /* SIPCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4CB5483FF2F76B3F2EB2942 /* SIPCredentials.swift */; };
 		F3603A2E53B7D965F54EEDA8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466B73744E5CA8F98D89456F /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
@@ -27,13 +29,15 @@
 		28D3AD3FB7B28AE112D604FD /* PushRelayClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRelayClient.swift; sourceTree = "<group>"; };
 		4494D7B24F0EEDF3FD6BFD17 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		466B73744E5CA8F98D89456F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4890E33FF0C3AAC6227EB326 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = wrapper.cfbundle; path = Settings.bundle; sourceTree = "<group>"; };
 		4B35FF8BFA45E872DA391ADD /* CallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallView.swift; sourceTree = "<group>"; };
+		6F3A0C4CFFA5968B4E1A4968 /* DialerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialerView.swift; sourceTree = "<group>"; };
+		727F37305A352CA618C15083 /* SIPSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIPSettings.swift; sourceTree = "<group>"; };
 		7592E17B17E9B93B168AA6E0 /* HomeSIP.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = HomeSIP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		761BC420FAB89239634DCF7F /* PushRelayConfig.swift.example */ = {isa = PBXFileReference; path = PushRelayConfig.swift.example; sourceTree = "<group>"; };
-		7E7B53DD061D109892D490F8 /* SIPCredentials.swift.example */ = {isa = PBXFileReference; path = SIPCredentials.swift.example; sourceTree = "<group>"; };
 		85D16B29E71AE9912E1BD2C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8735E8F13385FAE9C9FF0F72 /* HomeSIP.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeSIP.entitlements; sourceTree = "<group>"; };
-		A4CB5483FF2F76B3F2EB2942 /* SIPCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIPCredentials.swift; sourceTree = "<group>"; };
+		8DAEA03F07392C809CCEF8CA /* PhoneKeypadLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneKeypadLayout.swift; sourceTree = "<group>"; };
 		C084B057C1A1F9FF5B7F4FBB /* CallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
 		D7E6573BD5FA8B066B0DA40A /* HomeSIPApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSIPApp.swift; sourceTree = "<group>"; };
 		D8FD10776FF96A8E3D0095FA /* PushRelayConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRelayConfig.swift; sourceTree = "<group>"; };
@@ -77,6 +81,8 @@
 			children = (
 				4B35FF8BFA45E872DA391ADD /* CallView.swift */,
 				466B73744E5CA8F98D89456F /* ContentView.swift */,
+				6F3A0C4CFFA5968B4E1A4968 /* DialerView.swift */,
+				8DAEA03F07392C809CCEF8CA /* PhoneKeypadLayout.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -88,9 +94,8 @@
 				28D3AD3FB7B28AE112D604FD /* PushRelayClient.swift */,
 				D8FD10776FF96A8E3D0095FA /* PushRelayConfig.swift */,
 				761BC420FAB89239634DCF7F /* PushRelayConfig.swift.example */,
-				A4CB5483FF2F76B3F2EB2942 /* SIPCredentials.swift */,
-				7E7B53DD061D109892D490F8 /* SIPCredentials.swift.example */,
 				0E071771C4F3447EECB7FD78 /* SIPManager.swift */,
+				727F37305A352CA618C15083 /* SIPSettings.swift */,
 			);
 			path = SIP;
 			sourceTree = "<group>";
@@ -117,6 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				4494D7B24F0EEDF3FD6BFD17 /* Assets.xcassets */,
+				4890E33FF0C3AAC6227EB326 /* Settings.bundle */,
 			);
 			name = Resources;
 			path = HomeSIP/Resources;
@@ -189,7 +195,7 @@
 			files = (
 				C05F3215BCA57CD88AB013C3 /* Assets.xcassets in Resources */,
 				4D72FC5826581AC2E4ECBCA0 /* PushRelayConfig.swift.example in Resources */,
-				A1CA181F8F35C27115D671FD /* SIPCredentials.swift.example in Resources */,
+				9061E082FEFFDB54B3E84CAE /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,11 +210,13 @@
 				2F9B44D8C1502A43A14A5467 /* CallManager.swift in Sources */,
 				B15A4F9D2A622758CD6A083D /* CallView.swift in Sources */,
 				F3603A2E53B7D965F54EEDA8 /* ContentView.swift in Sources */,
+				AC6B2FA4C5966B7BE6A40ACD /* DialerView.swift in Sources */,
 				9CE02872A164F28F543865F3 /* HomeSIPApp.swift in Sources */,
+				94797C4CADABBA091A393A90 /* PhoneKeypadLayout.swift in Sources */,
 				D8C2D7EDA9561E95C7ADB52A /* PushRelayClient.swift in Sources */,
 				895B2965EBA5E1AC2A3FE009 /* PushRelayConfig.swift in Sources */,
-				E51B78FB23C230DDB3F3A729 /* SIPCredentials.swift in Sources */,
 				8333E79C62FACC1B4B4C829C /* SIPManager.swift in Sources */,
+				37082501BFA15F656F5F81F8 /* SIPSettings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
