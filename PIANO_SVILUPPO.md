@@ -69,11 +69,11 @@ invece di indovinare un tempo di attesa fisso — vedi dettaglio più sotto.
 - **Fix:** trasporto SIP passato da UDP a **TCP**, sia sull'account Linphone (`SIPManager.registerAccount()`) sia su Asterisk (nuovo `[transport-tcp]` in `pjsip.conf`, endpoint 101 configurato con `transport=transport-tcp`). TCP non soffre di questa classe di problema.
 - **Validazione:** registrazione stabile su cellulare+VPN, contatto confermato "Avail" via `pjsip show endpoint 101`, chiamata reale in/out con audio funzionante confermata dall'utente.
 
-### M3 — DTMF e funzionalità in chiamata
-- Tastierino DTMF in-call (RFC4733, già configurato lato Asterisk con `dtmf_mode=rfc4733`)
-- Supporto DTMF anche dalla UI di sistema CallKit (`CXPlayDTMFCallAction`)
+### M3 — DTMF e funzionalità in chiamata ✅ completata
+- Tastierino DTMF in-call (RFC4733, già configurato lato Asterisk con `dtmf_mode=rfc4733`) — già presente in `CallView.swift`
+- Supporto DTMF anche dalla UI di sistema CallKit (`CXPlayDTMFCallAction`) — già presente in `CallManager.swift`; corretto un bug per cui veniva inviata solo la prima cifra quando l'azione ne conteneva più di una
 - Test contro un risponditore automatico reale
-- **Validazione:** cifre riconosciute correttamente dal risponditore, nessun problema di timing o invii doppi
+- **Validazione:** cifre riconosciute correttamente dal risponditore, nessun problema di timing o invii doppi — confermato dall'utente
 
 ### M4 — Integrazione con Contatti/Siri
 - Intents Extension (`INStartCallIntent`) per comparire come opzione di chiamata nei Contatti iOS

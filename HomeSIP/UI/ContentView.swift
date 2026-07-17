@@ -21,7 +21,7 @@ struct ContentView: View {
 
     private var idleView: some View {
         VStack(spacing: 20) {
-            Text("HomeSIP — M2")
+            Text("HomeSIP — M3")
                 .font(.title2.bold())
 
             GroupBox("Stato registrazione") {

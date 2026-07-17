@@ -292,7 +292,10 @@ extension CallManager: CXProviderDelegate {
     }
 
     func provider(_ provider: CXProvider, perform action: CXPlayDTMFCallAction) {
-        if let digit = action.digits.first {
+        // action.digits può contenere più di un carattere (es. una sequenza
+        // incollata o inviata in blocco dal tastierino di sistema): vanno
+        // inviati tutti, nell'ordine, non solo il primo.
+        for digit in action.digits {
             sipManager?.sendDTMF(digit)
         }
         action.fulfill()
