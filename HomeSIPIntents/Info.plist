@@ -13,23 +13,24 @@
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
-	<string>APPL</string>
+	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>HomeSIP si collega al centralino Asterisk sulla rete locale di casa.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>HomeSIP usa il microfono per le chiamate SIP.</string>
-	<key>NSSiriUsageDescription</key>
-	<string>HomeSIP usa Siri per avviare chiamate SIP su comando vocale.</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>audio</string>
-		<string>voip</string>
-	</array>
-	<key>UILaunchScreen</key>
-	<dict/>
+	<key>NSExtension</key>
+	<dict>
+		<key>NSExtensionAttributes</key>
+		<dict>
+			<key>IntentsSupported</key>
+			<array>
+				<string>INStartCallIntent</string>
+			</array>
+		</dict>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.intents-service</string>
+		<key>NSExtensionPrincipalClass</key>
+		<string>$(PRODUCT_MODULE_NAME).IntentHandler</string>
+	</dict>
 </dict>
 </plist>

@@ -246,6 +246,11 @@ final class SIPManager: ObservableObject {
                 }
                 if self.callConnectedAt == nil {
                     self.callConnectedAt = Date()
+                    if let addr = call.remoteAddress {
+                        let handle = addr.username ?? addr.asStringUriOnly()
+                        let displayName = addr.displayName ?? handle
+                        CallDonationManager.donateCall(handle: handle, displayName: displayName)
+                    }
                 }
             default:
                 self.isCallActive = true

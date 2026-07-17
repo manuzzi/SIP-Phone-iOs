@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		15E803B19FEBCBCCE5999DFE /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F62C21A39249FAF7F78B46 /* IntentHandler.swift */; };
+		1ADDD24E0D5F5B2F7A854D7C /* CallDonationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EC746D339E3535E929C8EE /* CallDonationManager.swift */; };
 		2F9B44D8C1502A43A14A5467 /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C084B057C1A1F9FF5B7F4FBB /* CallManager.swift */; };
 		37082501BFA15F656F5F81F8 /* SIPSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727F37305A352CA618C15083 /* SIPSettings.swift */; };
+		3E13E3B5083AFFB6C939A712 /* HomeSIPIntents.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BEA957FC675BD17A6BA99AB8 /* HomeSIPIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		443C175A9E15BD87E352F8CB /* linphonesw in Frameworks */ = {isa = PBXBuildFile; productRef = 5C03D9577D4BAB2D9E279B37 /* linphonesw */; };
 		4D72FC5826581AC2E4ECBCA0 /* PushRelayConfig.swift.example in Resources */ = {isa = PBXBuildFile; fileRef = 761BC420FAB89239634DCF7F /* PushRelayConfig.swift.example */; };
 		76441B99021660E966094FE8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21A6D477961E08300B6874C /* AppDelegate.swift */; };
@@ -24,8 +27,34 @@
 		F3603A2E53B7D965F54EEDA8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466B73744E5CA8F98D89456F /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B94E40DE9E67E69F6FCB6D1F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6E90F7E5F19DD776F4BA1B36 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A6D79E03E3D311C0FA47C1A8;
+			remoteInfo = HomeSIPIntents;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F936242A756C9A86CE5BFD98 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3E13E3B5083AFFB6C939A712 /* HomeSIPIntents.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		0E071771C4F3447EECB7FD78 /* SIPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIPManager.swift; sourceTree = "<group>"; };
+		12EC746D339E3535E929C8EE /* CallDonationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallDonationManager.swift; sourceTree = "<group>"; };
+		25E92E0D0D18501A81598FEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		28D3AD3FB7B28AE112D604FD /* PushRelayClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRelayClient.swift; sourceTree = "<group>"; };
 		4494D7B24F0EEDF3FD6BFD17 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		466B73744E5CA8F98D89456F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -34,11 +63,14 @@
 		6F3A0C4CFFA5968B4E1A4968 /* DialerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialerView.swift; sourceTree = "<group>"; };
 		727F37305A352CA618C15083 /* SIPSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIPSettings.swift; sourceTree = "<group>"; };
 		7592E17B17E9B93B168AA6E0 /* HomeSIP.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = HomeSIP.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		761BC420FAB89239634DCF7F /* PushRelayConfig.swift.example */ = {isa = PBXFileReference; path = PushRelayConfig.swift.example; sourceTree = "<group>"; };
+		761BC420FAB89239634DCF7F /* PushRelayConfig.swift.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushRelayConfig.swift.example; sourceTree = "<group>"; };
 		85D16B29E71AE9912E1BD2C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8735E8F13385FAE9C9FF0F72 /* HomeSIP.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeSIP.entitlements; sourceTree = "<group>"; };
 		8DAEA03F07392C809CCEF8CA /* PhoneKeypadLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneKeypadLayout.swift; sourceTree = "<group>"; };
+		92B22CEAD24D0FCD31F3A5B0 /* HomeSIPIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeSIPIntents.entitlements; sourceTree = "<group>"; };
+		BEA957FC675BD17A6BA99AB8 /* HomeSIPIntents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = HomeSIPIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C084B057C1A1F9FF5B7F4FBB /* CallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
+		C9F62C21A39249FAF7F78B46 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		D7E6573BD5FA8B066B0DA40A /* HomeSIPApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSIPApp.swift; sourceTree = "<group>"; };
 		D8FD10776FF96A8E3D0095FA /* PushRelayConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRelayConfig.swift; sourceTree = "<group>"; };
 		F21A6D477961E08300B6874C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -72,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				7592E17B17E9B93B168AA6E0 /* HomeSIP.app */,
+				BEA957FC675BD17A6BA99AB8 /* HomeSIPIntents.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -90,6 +123,7 @@
 		BEB3D89D5C0BB95E5B946E58 /* SIP */ = {
 			isa = PBXGroup;
 			children = (
+				12EC746D339E3535E929C8EE /* CallDonationManager.swift */,
 				C084B057C1A1F9FF5B7F4FBB /* CallManager.swift */,
 				28D3AD3FB7B28AE112D604FD /* PushRelayClient.swift */,
 				D8FD10776FF96A8E3D0095FA /* PushRelayConfig.swift */,
@@ -100,10 +134,21 @@
 			path = SIP;
 			sourceTree = "<group>";
 		};
+		C28E827C25130B746C010E67 /* HomeSIPIntents */ = {
+			isa = PBXGroup;
+			children = (
+				92B22CEAD24D0FCD31F3A5B0 /* HomeSIPIntents.entitlements */,
+				25E92E0D0D18501A81598FEB /* Info.plist */,
+				C9F62C21A39249FAF7F78B46 /* IntentHandler.swift */,
+			);
+			path = HomeSIPIntents;
+			sourceTree = "<group>";
+		};
 		E23A69AFEB6A95B9B53F05B0 = {
 			isa = PBXGroup;
 			children = (
 				106511860F51A3AA681BDC8B /* HomeSIP */,
+				C28E827C25130B746C010E67 /* HomeSIPIntents */,
 				F9FD70F5079BB061E052A447 /* Resources */,
 				2A4356B708DB308799A36C04 /* Products */,
 			);
@@ -138,10 +183,12 @@
 				C638F73634D0DA7872E2E00A /* Sources */,
 				2F88890F675CBAB67C238C58 /* Resources */,
 				ACF6FED68B6694947A26D837 /* Frameworks */,
+				F936242A756C9A86CE5BFD98 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				570B669BD621A3C50C793584 /* PBXTargetDependency */,
 			);
 			name = HomeSIP;
 			packageProductDependencies = (
@@ -150,6 +197,23 @@
 			productName = HomeSIP;
 			productReference = 7592E17B17E9B93B168AA6E0 /* HomeSIP.app */;
 			productType = "com.apple.product-type.application";
+		};
+		A6D79E03E3D311C0FA47C1A8 /* HomeSIPIntents */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4D00FAB48A3FDD97E43E1E5F /* Build configuration list for PBXNativeTarget "HomeSIPIntents" */;
+			buildPhases = (
+				8DFC91144DBA26E463EE7D88 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HomeSIPIntents;
+			packageProductDependencies = (
+			);
+			productName = HomeSIPIntents;
+			productReference = BEA957FC675BD17A6BA99AB8 /* HomeSIPIntents.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -162,6 +226,9 @@
 				TargetAttributes = {
 					5CF33AAF5B80155101B14940 = {
 						DevelopmentTeam = WQZGRLXS8K;
+						ProvisioningStyle = Automatic;
+					};
+					A6D79E03E3D311C0FA47C1A8 = {
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -184,6 +251,7 @@
 			projectRoot = "";
 			targets = (
 				5CF33AAF5B80155101B14940 /* HomeSIP */,
+				A6D79E03E3D311C0FA47C1A8 /* HomeSIPIntents */,
 			);
 		};
 /* End PBXProject section */
@@ -202,11 +270,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8DFC91144DBA26E463EE7D88 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15E803B19FEBCBCCE5999DFE /* IntentHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C638F73634D0DA7872E2E00A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				76441B99021660E966094FE8 /* AppDelegate.swift in Sources */,
+				1ADDD24E0D5F5B2F7A854D7C /* CallDonationManager.swift in Sources */,
 				2F9B44D8C1502A43A14A5467 /* CallManager.swift in Sources */,
 				B15A4F9D2A622758CD6A083D /* CallView.swift in Sources */,
 				F3603A2E53B7D965F54EEDA8 /* ContentView.swift in Sources */,
@@ -222,7 +299,59 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		570B669BD621A3C50C793584 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A6D79E03E3D311C0FA47C1A8 /* HomeSIPIntents */;
+			targetProxy = B94E40DE9E67E69F6FCB6D1F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		2B828AFDA4CE07C234248F8A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = HomeSIPIntents/HomeSIPIntents.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WQZGRLXS8K;
+				INFOPLIST_FILE = HomeSIPIntents/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = work.manuzzi.homesip.intents;
+				PRODUCT_NAME = HomeSIPIntents;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		871A7EB5453BA0444FF3D192 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = HomeSIPIntents/HomeSIPIntents.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WQZGRLXS8K;
+				INFOPLIST_FILE = HomeSIPIntents/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = work.manuzzi.homesip.intents;
+				PRODUCT_NAME = HomeSIPIntents;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 		9D7FAB8B76676B543A59753C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -394,6 +523,15 @@
 			buildConfigurations = (
 				C8F38FA38DCCB894A6133CCE /* Debug */,
 				F03CAB9CE2A1DFFE5A9AC3E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4D00FAB48A3FDD97E43E1E5F /* Build configuration list for PBXNativeTarget "HomeSIPIntents" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				871A7EB5453BA0444FF3D192 /* Debug */,
+				2B828AFDA4CE07C234248F8A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

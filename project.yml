@@ -31,10 +31,12 @@ targets:
           - voip
         NSMicrophoneUsageDescription: "HomeSIP usa il microfono per le chiamate SIP."
         NSLocalNetworkUsageDescription: "HomeSIP si collega al centralino Asterisk sulla rete locale di casa."
+        NSSiriUsageDescription: "HomeSIP usa Siri per avviare chiamate SIP su comando vocale."
     entitlements:
       path: HomeSIP/HomeSIP.entitlements
       properties:
         aps-environment: development
+        com.apple.developer.siri: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: work.manuzzi.homesip
@@ -47,3 +49,34 @@ targets:
     dependencies:
       - package: LinphoneSDK
         product: linphonesw
+      - target: HomeSIPIntents
+        embed: true
+
+  HomeSIPIntents:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: HomeSIPIntents
+    info:
+      path: HomeSIPIntents/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.intents-service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).IntentHandler
+          NSExtensionAttributes:
+            IntentsSupported:
+              - INStartCallIntent
+    entitlements:
+      path: HomeSIPIntents/HomeSIPIntents.entitlements
+      properties:
+        com.apple.developer.siri: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: work.manuzzi.homesip.intents
+        PRODUCT_NAME: HomeSIPIntents
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: WQZGRLXS8K
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        SKIP_INSTALL: true

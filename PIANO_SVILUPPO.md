@@ -82,12 +82,14 @@ invece di indovinare un tempo di attesa fisso — vedi dettaglio più sotto.
 - Interfaccia durante la chiamata ridisegnata in stile Telefono di iOS: sfondo scuro, pulsanti circolari traslucidi, timer di durata chiamata, tastierino DTMF a schermo intero con log delle cifre inviate (`CallView.swift`)
 - **Validazione:** schermata "non configurato" e dialer verificati su simulatore; interfaccia in chiamata da validare in una chiamata reale su dispositivo fisico
 
-### M4 — Integrazione con Contatti/Siri
-- Intents Extension (`INStartCallIntent`) per comparire come opzione di chiamata nei Contatti iOS
-- Chiamate visibili nei Recenti di sistema, comando Siri "Chiama [nome] con [App]"
-- Valutazione facoltativa della funzione "app di chiamata predefinita" (iOS 18+)
+### M4 — Integrazione con Contatti/Siri ✅ completata
+- Intents Extension `HomeSIPIntents` (target `app-extension` separato) che implementa `INStartCallIntentHandling`: risolve contatto/capability e risponde sempre `.continueInApp`, perché l'estensione gira in un processo sandboxato senza accesso al Core Linphone — la chiamata vera parte dall'app principale (`HomeSIPApp.onContinueUserActivity`)
+- Dopo ogni chiamata connessa (in o out), `CallDonationManager` dona una `INInteraction` con `INStartCallIntent`: è questo storico di donazioni, non una configurazione statica, che nel tempo fa comparire HomeSIP come opzione di chiamata su un contatto e abilita "Chiama [nome] con HomeSIP" via Siri
+- Chiamate visibili nei Recenti di sistema: già garantito dall'uso di CallKit fin da M1 (`CXProvider.reportNewIncomingCall`/`reportOutgoingCall`), nessun lavoro aggiuntivo necessario
+- **Valutazione "app di chiamata predefinita" (iOS 18+):** non implementata. Diventare l'app predefinita intercetterebbe *tutti* i link `tel:` di sistema (Safari, Messaggi, ecc.), anche numeri che il trunk Vodafone non può raggiungere o casi limite come le emergenze — rischio sproporzionato rispetto al beneficio per un uso home/personale. Da riconsiderare solo se in futuro HomeSIP diventasse il modo primario di effettuare chiamate.
 - *Nota: non è possibile intercettare il tastierino dell'app Telefono nativa per numeri PSTN generici — questa è la forma di integrazione più vicina realizzabile su iOS.*
-- **Validazione:** dall'app Contatti tocchi l'icona dell'app su un contatto e parte la chiamata SIP; la chiamata compare nei Recenti di sistema
+- **Percorso reale:** l'errore di build `Entitlement com.apple.developer.siri not found` ha richiesto due passaggi manuali non ovvi: (1) aggiungere la capability Siri da Xcode e **tentare davvero una build** (aggiungerla dal pannello Signing & Capabilities senza compilare non basta, Xcode negozia con il portale solo al build) e (2) creare manualmente su developer.apple.com l'App ID `work.manuzzi.homesip.intents` per il target dell'estensione, perché la registrazione automatica di un App ID nuovo con una capability non ancora abilitata sull'account non riesce da CLI (`-allowProvisioningUpdates`) né dal primo tentativo in Xcode.
+- **Validazione:** dall'app Contatti tocchi l'icona dell'app su un contatto e parte la chiamata SIP; la chiamata compare nei Recenti di sistema; comando Siri "Chiama [nome] con HomeSIP" funzionante dopo alcune chiamate donate
 
 ### M5 — Robustezza e uso quotidiano
 - Gestione cambio rete (WiFi casa ↔ cellulare+VPN ↔ perdita connessione) con ri-registrazione automatica — *registrazione su cellulare+VPN già validata (vedi fix trasporto TCP dopo M2); resta da validare il comportamento in transizione live tra le reti*
