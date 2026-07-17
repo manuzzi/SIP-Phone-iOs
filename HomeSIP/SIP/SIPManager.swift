@@ -1,5 +1,9 @@
 import Foundation
+import Network
+import os
 import linphonesw
+
+private let logger = Logger(subsystem: "work.manuzzi.homesip", category: "SIPManager")
 
 /// Registrazione SIP e gestione delle chiamate verso l'interno di test (101).
 /// Le decisioni sull'interfaccia di sistema (schermata di chiamata, Recenti)
@@ -28,6 +32,24 @@ final class SIPManager: ObservableObject {
     private var coreDelegate: CoreDelegateStub!
     private var iterateTimer: Timer?
 
+    // Linphone non si accorge da solo dei cambi di rete (WiFi ↔ cellulare ↔
+    // VPN): senza essere avvisato esplicitamente, resta legato al vecchio
+    // socket finché non scade con un errore di I/O (osservato: ~2 minuti
+    // bloccato su "Refreshing" prima di fallire). Il path monitor forza un
+    // refresh del trasporto/registrazione ad ogni cambio di percorso reale.
+    private let pathMonitor = NWPathMonitor()
+    private let pathMonitorQueue = DispatchQueue(label: "com.manuzzi.homesip.pathmonitor")
+    private var lastPathSummary: String?
+
+    // All'avvio NWPathMonitor può notificare più percorsi in rapida sequenza
+    // (uno transitorio, poi quello definitivo): senza debounce, il secondo
+    // evento interpretava questo come "cambio rete" e forzava una
+    // ri-registrazione PROPRIO mentre la REGISTER iniziale era ancora in
+    // volo, interrompendola a metà (osservato via tcpdump: 401 mai seguito
+    // dal retry autenticato). Si agisce solo dopo che il percorso resta
+    // stabile per un breve intervallo.
+    private var reregisterDebounceWorkItem: DispatchWorkItem?
+
     func start() {
         guard core == nil else { return } // già avviato (es. da AppDelegate e poi da ContentView)
 
@@ -50,6 +72,8 @@ final class SIPManager: ObservableObject {
                     self?.handleCallStateChanged(call: call, state: state, message: message)
                 },
                 onAccountRegistrationStateChanged: { [weak self] _, account, state, message in
+                    logger.notice("stato registrazione -> \(String(describing: state), privacy: .public) — \(message, privacy: .public)")
+                    print("SIPManager: stato registrazione -> \(state) — \(message)")
                     DispatchQueue.main.async {
                         self?.registrationState = "\(state) — \(message)"
                     }
@@ -72,8 +96,82 @@ final class SIPManager: ObservableObject {
             }
 
             try registerAccount()
+            startNetworkMonitoring()
         } catch {
             registrationState = "Errore avvio: \(error)"
+        }
+    }
+
+    private func startNetworkMonitoring() {
+        pathMonitor.pathUpdateHandler = { [weak self] path in
+            guard let self else { return }
+            // A differenza di "availableInterfaces" (elenca tutto ciò che
+            // esiste sul sistema, WiFi e cellulare restano "disponibili"
+            // anche quando la VPN è attiva), usesInterfaceType(_:) riflette
+            // quali interfacce partecipano DAVVERO al percorso che il
+            // sistema sta scegliendo in questo momento — è quello che
+            // cambia realmente quando si attiva/disattiva la VPN.
+            let summary = [
+                "wifi:\(path.usesInterfaceType(.wifi))",
+                "cellular:\(path.usesInterfaceType(.cellular))",
+                "vpn:\(path.usesInterfaceType(.other))",
+                "wired:\(path.usesInterfaceType(.wiredEthernet))",
+                "status:\(path.status)",
+            ].joined(separator: ",")
+
+            DispatchQueue.main.async {
+                defer { self.lastPathSummary = summary }
+                guard let previous = self.lastPathSummary else {
+                    logger.notice("path monitor avviato, percorso iniziale: \(summary, privacy: .public)")
+                    print("SIPManager: path monitor avviato, percorso iniziale: \(summary)")
+                    return
+                }
+                guard previous != summary else { return }
+                logger.notice("percorso di rete cambiato: \(previous, privacy: .public) -> \(summary, privacy: .public), programmo ri-registrazione (debounce)")
+                print("SIPManager: percorso di rete cambiato: \(previous) -> \(summary), programmo ri-registrazione (debounce)")
+
+                self.reregisterDebounceWorkItem?.cancel()
+                let workItem = DispatchWorkItem { [weak self] in
+                    guard let self else { return }
+                    logger.notice("debounce scaduto, percorso stabile: forzo ri-registrazione")
+                    print("SIPManager: debounce scaduto, percorso stabile: forzo ri-registrazione")
+                    self.forceReregister()
+                }
+                self.reregisterDebounceWorkItem = workItem
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: workItem)
+            }
+        }
+        pathMonitor.start(queue: pathMonitorQueue)
+    }
+
+    /// Il cambio di rete (WiFi ↔ cellulare ↔ VPN) può lasciare Linphone
+    /// legato a un socket per un percorso non più valido, che scade solo
+    /// dopo minuti con un errore di I/O invece di riprovare su uno nuovo.
+    /// Disabilitare e riabilitare la registrazione dell'account (stesso
+    /// pattern usato dall'app ufficiale Linphone per un logout/login pulito)
+    /// forza una nuova transazione REGISTER da zero.
+    private func forceReregister() {
+        guard let core, let account = core.defaultAccount, let params = account.params else {
+            logger.error("forceReregister: core/account/params non disponibili")
+            print("SIPManager: forceReregister: core/account/params non disponibili")
+            return
+        }
+
+        if let disabledParams = params.clone() {
+            disabledParams.registerEnabled = false
+            account.params = disabledParams
+            logger.notice("forceReregister: registrazione disabilitata")
+            print("SIPManager: forceReregister: registrazione disabilitata")
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            guard let self, let core = self.core, let account = core.defaultAccount, let params = account.params else { return }
+            if let enabledParams = params.clone() {
+                enabledParams.registerEnabled = true
+                account.params = enabledParams
+                logger.notice("forceReregister: registrazione riabilitata")
+                print("SIPManager: forceReregister: registrazione riabilitata")
+            }
         }
     }
 
@@ -95,7 +193,13 @@ final class SIPManager: ObservableObject {
         try accountParams.setIdentityaddress(newValue: identity)
 
         let serverAddress = try factory.createAddress(addr: "sip:\(sipDomain)")
-        try serverAddress.setTransport(newValue: .Udp)
+        // UDP fallisce sistematicamente su cellulare+WireGuard: Asterisk invia
+        // sempre il 401 correttamente (verificato via pjsip logger), ma la
+        // risposta non arriva mai al socket UDP "connesso" di belle-sip una
+        // volta attraversato il tunnel utun (causa non isolata con certezza,
+        // ipotesi principale: interazione nota tra socket UDP connessi e
+        // NEPacketTunnelProvider). TCP evita la classe di problema.
+        try serverAddress.setTransport(newValue: .Tcp)
         try accountParams.setServeraddress(newValue: serverAddress)
 
         accountParams.registerEnabled = true

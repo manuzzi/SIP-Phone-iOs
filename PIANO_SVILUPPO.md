@@ -62,6 +62,13 @@ invece di indovinare un tempo di attesa fisso — vedi dettaglio più sotto.
 
 **Percorso reale (per riferimento futuro):** il primo design (osservare `DialBegin` via AMI + attesa fissa `Wait(4)` nel dialplan prima di ritentare) si è rivelato inaffidabile — bug applicativi (doppio accept CallKit+UI, risposta prima dell'INVITE reale, push ridondante ad app già in foreground) mascheravano inizialmente il problema di fondo: Asterisk non aspetta che l'app si risvegli, fallisce subito se il contatto SIP non è ancora registrato nell'istante esatto del `Dial()`. Risolti i bug applicativi, restava il problema di timing — la soluzione strutturale (ispirata a come Flexisip, il push gateway ufficiale di Linphone, risolve lo stesso problema) è passare da un'attesa indovinata a un'attesa **basata su segnale reale**, usando ARI/Stasis per mettere in pausa la chiamata finché l'app non conferma di essere pronta.
 
+### Fix — Registrazione SIP su cellulare+VPN (anticipato da M5) ✅ risolto
+- **Sintomo:** con l'iPhone su rete cellulare + WireGuard, la REGISTER raggiungeva sempre Asterisk e Asterisk rispondeva sempre correttamente con `401 Unauthorized`, ma il telefono non la elaborava mai: restava bloccato a ritrasmettere la REGISTER originale non autenticata (visibile anche a occhio come "Refreshing"/"Failed — io error"). Su WiFi locale (nessuna VPN) tutto funzionava.
+- **Ipotesi scartate, in ordine:** cambio percorso di rete non gestito da Linphone (fix con `NWPathMonitor` + ri-registrazione forzata: non risolutivo, il problema si presentava anche a Core appena avviato senza alcun cambio di percorso rilevato); interferenza del debounce sul path monitor con la REGISTER iniziale (escluso: il problema persisteva anche senza che il path monitor rilevasse alcun cambiamento); frammentazione MTU della risposta 401 nel tunnel WireGuard (escluso: persisteva anche con MTU abbassato a 1280, ben sotto qualunque soglia realistica per quel pacchetto).
+- **Diagnosi risolutiva:** `tcpdump` mirato sul router (interfaccia `wg0` e WAN) più `pjsip set logger on` su Asterisk hanno confermato che il 401 viene sempre inviato, correttamente indirizzato, e che il tunnel WireGuard lo consegna fisicamente al telefono (contatori di trasferimento in aumento). Aumentando la verbosità di logging di liblinphone lato client (`LoggingService.Instance.logLevelMask`) si è visto che il socket UDP "connesso" di belle-sip non riceve mai nulla in risposta — solo righe di invio, mai di ricezione. Causa isolata: interazione nota e poco affidabile tra socket UDP connessi e VPN basate su `NEPacketTunnelProvider` (come l'app WireGuard su iOS) — il pacchetto arriva all'interfaccia di tunnel ma non viene consegnato al socket applicativo.
+- **Fix:** trasporto SIP passato da UDP a **TCP**, sia sull'account Linphone (`SIPManager.registerAccount()`) sia su Asterisk (nuovo `[transport-tcp]` in `pjsip.conf`, endpoint 101 configurato con `transport=transport-tcp`). TCP non soffre di questa classe di problema.
+- **Validazione:** registrazione stabile su cellulare+VPN, contatto confermato "Avail" via `pjsip show endpoint 101`, chiamata reale in/out con audio funzionante confermata dall'utente.
+
 ### M3 — DTMF e funzionalità in chiamata
 - Tastierino DTMF in-call (RFC4733, già configurato lato Asterisk con `dtmf_mode=rfc4733`)
 - Supporto DTMF anche dalla UI di sistema CallKit (`CXPlayDTMFCallAction`)
@@ -76,7 +83,7 @@ invece di indovinare un tempo di attesa fisso — vedi dettaglio più sotto.
 - **Validazione:** dall'app Contatti tocchi l'icona dell'app su un contatto e parte la chiamata SIP; la chiamata compare nei Recenti di sistema
 
 ### M5 — Robustezza e uso quotidiano
-- Gestione cambio rete (WiFi casa ↔ cellulare+VPN ↔ perdita connessione) con ri-registrazione automatica
+- Gestione cambio rete (WiFi casa ↔ cellulare+VPN ↔ perdita connessione) con ri-registrazione automatica — *registrazione su cellulare+VPN già validata (vedi fix trasporto TCP dopo M2); resta da validare il comportamento in transizione live tra le reti*
 - Notifiche locali se il server non è raggiungibile
 - Test sul campo di 1-2 settimane come sostituto quotidiano di Linphone, con log delle chiamate perse
 - **Validazione:** zero chiamate perse nel periodo di test, comportamento stabile su riavvii di telefono/app update
