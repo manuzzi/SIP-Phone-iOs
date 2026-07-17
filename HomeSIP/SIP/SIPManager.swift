@@ -47,6 +47,12 @@ final class SIPManager: ObservableObject {
     // stabile per un breve intervallo.
     private var reregisterDebounceWorkItem: DispatchWorkItem?
 
+    /// Evita di rimandare la stessa notifica/lo stesso evento di log ad ogni
+    /// singolo tentativo di REGISTER fallito mentre il problema persiste:
+    /// si segnala solo alla transizione verso "non raggiungibile", si
+    /// azzera non appena la registrazione torna a funzionare.
+    private var hasNotifiedUnreachable = false
+
     /// Da richiamare anche quando l'app torna in primo piano: se al primo
     /// avvio l'account non era ancora configurato (Impostazioni > HomeSIP),
     /// questo permette di agganciare la registrazione non appena l'utente
@@ -86,10 +92,15 @@ final class SIPManager: ObservableObject {
                         self?.registrationState = "\(state) — \(message)"
                     }
                     if state == .Ok {
+                        self?.hasNotifiedUnreachable = false
                         // Sblocca eventuali chiamate che il push relay sta
                         // trattenendo in Stasis in attesa che l'app si
                         // ri-registri dopo un risveglio da VoIP push.
                         PushRelayClient.shared.notifyDeviceReady()
+                    } else if state == .Failed, self?.hasNotifiedUnreachable == false {
+                        self?.hasNotifiedUnreachable = true
+                        CallHistoryStore.log(kind: .serverUnreachable, detail: message)
+                        NotificationManager.notifyServerUnreachable(detail: message)
                     }
                 }
             )
@@ -155,31 +166,23 @@ final class SIPManager: ObservableObject {
     /// Il cambio di rete (WiFi ↔ cellulare ↔ VPN) può lasciare Linphone
     /// legato a un socket per un percorso non più valido, che scade solo
     /// dopo minuti con un errore di I/O invece di riprovare su uno nuovo.
-    /// Disabilitare e riabilitare la registrazione dell'account (stesso
-    /// pattern usato dall'app ufficiale Linphone per un logout/login pulito)
-    /// forza una nuova transazione REGISTER da zero.
+    /// `networkReachable` è l'API ufficiale di Linphone per questo esatto
+    /// scenario (vedi doc del wrapper): a `false` chiude tutte le
+    /// connessioni di rete, a `true` fa riconnettere e ri-registrare tutti
+    /// gli account automaticamente — sostituisce un precedente workaround
+    /// (clonare gli AccountParams per disabilitare/riabilitare la
+    /// registrazione) che funzionava ma non era il meccanismo previsto.
     private func forceReregister() {
-        guard let core, let account = core.defaultAccount, let params = account.params else {
-            logger.error("forceReregister: core/account/params non disponibili")
-            print("SIPManager: forceReregister: core/account/params non disponibili")
-            return
-        }
-
-        if let disabledParams = params.clone() {
-            disabledParams.registerEnabled = false
-            account.params = disabledParams
-            logger.notice("forceReregister: registrazione disabilitata")
-            print("SIPManager: forceReregister: registrazione disabilitata")
-        }
+        guard let core else { return }
+        core.networkReachable = false
+        logger.notice("forceReregister: rete segnalata non raggiungibile, chiudo le connessioni")
+        print("SIPManager: forceReregister: rete segnalata non raggiungibile, chiudo le connessioni")
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            guard let self, let core = self.core, let account = core.defaultAccount, let params = account.params else { return }
-            if let enabledParams = params.clone() {
-                enabledParams.registerEnabled = true
-                account.params = enabledParams
-                logger.notice("forceReregister: registrazione riabilitata")
-                print("SIPManager: forceReregister: registrazione riabilitata")
-            }
+            guard let self, let core = self.core else { return }
+            core.networkReachable = true
+            logger.notice("forceReregister: rete segnalata raggiungibile, ri-registrazione automatica")
+            print("SIPManager: forceReregister: rete segnalata raggiungibile, ri-registrazione automatica")
         }
     }
 
@@ -226,6 +229,14 @@ final class SIPManager: ObservableObject {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             self.callState = "\(state) — \(message)"
+            // Va registrato qui (non in .Released, che azzera remoteDisplayName
+            // e callConnectedAt subito dopo): è l'ultimo stato in cui i dati
+            // di questa chiamata sono ancora quelli giusti.
+            if state == .End || state == .Error, call.dir == .Incoming, self.callConnectedAt == nil {
+                let name = self.remoteDisplayName.isEmpty ? "Sconosciuto" : self.remoteDisplayName
+                CallHistoryStore.log(kind: .missedCall, detail: name)
+            }
+
             switch state {
             case .Released:
                 self.isCallActive = false

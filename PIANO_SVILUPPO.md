@@ -91,11 +91,12 @@ invece di indovinare un tempo di attesa fisso — vedi dettaglio più sotto.
 - **Percorso reale:** l'errore di build `Entitlement com.apple.developer.siri not found` ha richiesto due passaggi manuali non ovvi: (1) aggiungere la capability Siri da Xcode e **tentare davvero una build** (aggiungerla dal pannello Signing & Capabilities senza compilare non basta, Xcode negozia con il portale solo al build) e (2) creare manualmente su developer.apple.com l'App ID `work.manuzzi.homesip.intents` per il target dell'estensione, perché la registrazione automatica di un App ID nuovo con una capability non ancora abilitata sull'account non riesce da CLI (`-allowProvisioningUpdates`) né dal primo tentativo in Xcode.
 - **Validazione:** dall'app Contatti tocchi l'icona dell'app su un contatto e parte la chiamata SIP; la chiamata compare nei Recenti di sistema; comando Siri "Chiama [nome] con HomeSIP" funzionante dopo alcune chiamate donate
 
-### M5 — Robustezza e uso quotidiano
-- Gestione cambio rete (WiFi casa ↔ cellulare+VPN ↔ perdita connessione) con ri-registrazione automatica — *registrazione su cellulare+VPN già validata (vedi fix trasporto TCP dopo M2); resta da validare il comportamento in transizione live tra le reti*
-- Notifiche locali se il server non è raggiungibile
-- Test sul campo di 1-2 settimane come sostituto quotidiano di Linphone, con log delle chiamate perse
-- **Validazione:** zero chiamate perse nel periodo di test, comportamento stabile su riavvii di telefono/app update
+### M5 — Robustezza e uso quotidiano 🔄 in corso (test sul campo in attesa)
+- Gestione cambio rete (WiFi casa ↔ cellulare+VPN ↔ perdita connessione) con ri-registrazione automatica: sostituito il workaround precedente (clonare gli AccountParams per disabilitare/riabilitare la registrazione) con `core.networkReachable`, l'API ufficiale di Linphone pensata esattamente per questo scenario — a `false` chiude tutte le connessioni, a `true` fa riconnettere e ri-registrare automaticamente tutti gli account. Registrazione su cellulare+VPN già validata (vedi fix trasporto TCP dopo M2); resta da validare il comportamento in transizione live tra le reti durante il test sul campo
+- Notifiche locali (`NotificationManager`) quando la registrazione fallisce, con guardia per non notificare ripetutamente durante un disservizio prolungato (solo alla transizione verso "non raggiungibile", azzerata al ritorno a `.Ok`)
+- Log persistente di chiamate perse e problemi di raggiungibilità (`CallHistoryStore`, salvato in UserDefaults), consultabile in-app dall'icona a orologio nella home (`CallHistoryView`) — pensato per poter verificare a posteriori l'esito del test sul campo invece di doverlo osservare mentre succede
+- Test sul campo di 1-2 settimane come sostituto quotidiano di Linphone: **da eseguire manualmente dall'utente**, non automatizzabile — usare l'app come sostituto di Linphone nell'uso quotidiano e consultare periodicamente il registro eventi
+- **Validazione:** zero chiamate perse nel periodo di test (verificabile dal registro eventi), comportamento stabile su riavvii di telefono/app update
 
 ### M6 — Opzionale, solo se si decide di procedere verso l'App Store
 - Rimozione di eventuali residui hardcoded

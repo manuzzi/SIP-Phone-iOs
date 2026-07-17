@@ -13,6 +13,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         SIPSettings.registerDefaults()
+        NotificationManager.requestAuthorizationIfNeeded()
         SIPManager.shared.start()
 
         let registry = PKPushRegistry(queue: .main)

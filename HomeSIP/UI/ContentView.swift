@@ -6,6 +6,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.openURL) private var openURL
     @State private var destination: String = ""
+    @State private var showHistory = false
 
     var body: some View {
         Group {
@@ -33,12 +34,25 @@ struct ContentView: View {
 
     private var idleView: some View {
         VStack(spacing: 12) {
-            Text("HomeSIP — M3")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            Text(sipManager.registrationState)
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
+            ZStack {
+                VStack(spacing: 2) {
+                    Text("HomeSIP — M5")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    Text(sipManager.registrationState)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+                HStack {
+                    Spacer()
+                    Button {
+                        showHistory = true
+                    } label: {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
 
             Spacer(minLength: 8)
 
@@ -50,6 +64,9 @@ struct ContentView: View {
             Spacer(minLength: 8)
         }
         .padding()
+        .sheet(isPresented: $showHistory) {
+            CallHistoryView()
+        }
     }
 
     private var notConfiguredView: some View {
