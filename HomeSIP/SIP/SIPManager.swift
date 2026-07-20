@@ -372,35 +372,39 @@ final class SIPManager: ObservableObject {
                 self.isCallActive = true
                 self.isIncomingRinging = true
                 if let addr = call.remoteAddress {
-                    self.remoteDisplayName = addr.displayName ?? addr.username ?? addr.asStringUriOnly()
+                    self.remoteDisplayName = Self.resolvedDisplayName(for: addr)
                 }
             case .Connected, .StreamsRunning:
                 self.isCallActive = true
                 self.isIncomingRinging = false
                 if let addr = call.remoteAddress {
-                    self.remoteDisplayName = addr.displayName ?? addr.username ?? addr.asStringUriOnly()
+                    self.remoteDisplayName = Self.resolvedDisplayName(for: addr)
                 }
                 if self.callConnectedAt == nil {
                     self.callConnectedAt = Date()
                     if let addr = call.remoteAddress {
                         let handle = addr.username ?? addr.asStringUriOnly()
-                        let displayName = addr.displayName ?? handle
-                        CallDonationManager.donateCall(handle: handle, displayName: displayName)
+                        CallDonationManager.donateCall(handle: handle, displayName: self.remoteDisplayName)
                     }
                 }
             default:
                 self.isCallActive = true
                 self.isIncomingRinging = false
                 if let addr = call.remoteAddress {
-                    self.remoteDisplayName = addr.displayName ?? addr.username ?? addr.asStringUriOnly()
+                    self.remoteDisplayName = Self.resolvedDisplayName(for: addr)
                 }
             }
         }
 
         switch state {
         case .IncomingReceived:
-            let handle = call.remoteAddress?.asStringUriOnly() ?? "sconosciuto"
-            let displayName = call.remoteAddress?.displayName ?? call.remoteAddress?.username ?? handle
+            // Il numero grezzo (non l'URI SIP completo, es. non
+            // "sip:3482556548@93.70.98.172"): CallManager ne ha bisogno per
+            // costruire un CXHandle di tipo .phoneNumber, l'unico modo per
+            // cui CallKit può abbinarlo automaticamente a un contatto in
+            // rubrica nella schermata di chiamata e nei Recenti di sistema.
+            let handle = call.remoteAddress?.username ?? call.remoteAddress?.asStringUriOnly() ?? "sconosciuto"
+            let displayName = call.remoteAddress.map(Self.resolvedDisplayName(for:)) ?? handle
             CallManager.shared.reportIncomingCall(handle: handle, displayName: displayName)
         case .StreamsRunning:
             if call.dir == .Outgoing {
@@ -411,6 +415,17 @@ final class SIPManager: ObservableObject {
         default:
             break
         }
+    }
+
+    /// Preferisce un contatto in rubrica corrispondente al numero (via
+    /// Contacts, se l'utente ha concesso l'accesso), altrimenti il nome che
+    /// il SIP stesso può fornire, altrimenti il numero/URI grezzo.
+    private static func resolvedDisplayName(for addr: Address) -> String {
+        let username = addr.username ?? addr.asStringUriOnly()
+        if let contactName = ContactResolver.displayName(forNumber: username) {
+            return contactName
+        }
+        return addr.displayName ?? username
     }
 
     // MARK: - Azioni richieste da CallManager

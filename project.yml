@@ -34,6 +34,7 @@ targets:
         NSMicrophoneUsageDescription: "HomeSIP usa il microfono per le chiamate SIP."
         NSLocalNetworkUsageDescription: "HomeSIP si collega al centralino Asterisk sulla rete locale di casa."
         NSSiriUsageDescription: "HomeSIP usa Siri per avviare chiamate SIP su comando vocale."
+        NSContactsUsageDescription: "HomeSIP usa la rubrica per mostrare il nome dei contatti durante le chiamate."
     entitlements:
       path: HomeSIP/HomeSIP.entitlements
       properties:

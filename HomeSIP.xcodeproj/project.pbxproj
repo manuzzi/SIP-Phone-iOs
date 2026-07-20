@@ -30,6 +30,7 @@
 		6814F426E5960ECD60BF06FF /* dtmf_5.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8BE63F22AF2FCA5430DEEF81 /* dtmf_5.wav */; };
 		6D487BBB05FBB8681F52533C /* ServerReachabilityProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E56B2D3FCCF724F2BD030F /* ServerReachabilityProbe.swift */; };
 		6D5CD2EC584380B95AD60D97 /* SharedStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53CFFAD4AB1F90DBCDC0F39 /* SharedStatus.swift */; };
+		74611E5EF1F22ED5FDAD03CA /* ContactResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888A0D7CC410A72036698DA7 /* ContactResolver.swift */; };
 		76441B99021660E966094FE8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21A6D477961E08300B6874C /* AppDelegate.swift */; };
 		795DFDF481A1299B4A996612 /* DTMFTonePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384AC6ED248DCBC54E753C72 /* DTMFTonePlayer.swift */; };
 		8333E79C62FACC1B4B4C829C /* SIPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E071771C4F3447EECB7FD78 /* SIPManager.swift */; };
@@ -113,6 +114,7 @@
 		85D16B29E71AE9912E1BD2C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		86B229F43EABB27F3BC924EC /* dtmf_1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_1.wav; sourceTree = "<group>"; };
 		8735E8F13385FAE9C9FF0F72 /* HomeSIP.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeSIP.entitlements; sourceTree = "<group>"; };
+		888A0D7CC410A72036698DA7 /* ContactResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactResolver.swift; sourceTree = "<group>"; };
 		8BE63F22AF2FCA5430DEEF81 /* dtmf_5.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dtmf_5.wav; sourceTree = "<group>"; };
 		8DAEA03F07392C809CCEF8CA /* PhoneKeypadLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneKeypadLayout.swift; sourceTree = "<group>"; };
 		92B22CEAD24D0FCD31F3A5B0 /* HomeSIPIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeSIPIntents.entitlements; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 				12EC746D339E3535E929C8EE /* CallDonationManager.swift */,
 				D564F26C30DE769576BC8FB4 /* CallHistoryStore.swift */,
 				C084B057C1A1F9FF5B7F4FBB /* CallManager.swift */,
+				888A0D7CC410A72036698DA7 /* ContactResolver.swift */,
 				68AA58347C70B61BAB83C70D /* DebugFileLogger.swift */,
 				3ACCD79BBE9235B8E3D2A97B /* NotificationManager.swift */,
 				28D3AD3FB7B28AE112D604FD /* PushRelayClient.swift */,
@@ -435,6 +438,7 @@
 				B2861CFA009BF9F0B6AC0BBC /* CallHistoryView.swift in Sources */,
 				2F9B44D8C1502A43A14A5467 /* CallManager.swift in Sources */,
 				B15A4F9D2A622758CD6A083D /* CallView.swift in Sources */,
+				74611E5EF1F22ED5FDAD03CA /* ContactResolver.swift in Sources */,
 				F3603A2E53B7D965F54EEDA8 /* ContentView.swift in Sources */,
 				795DFDF481A1299B4A996612 /* DTMFTonePlayer.swift in Sources */,
 				E8ADA58E667909E7E506065B /* DebugFileLogger.swift in Sources */,

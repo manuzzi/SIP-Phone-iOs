@@ -74,8 +74,7 @@ final class CallManager: NSObject, ObservableObject {
         activeCallUUID = uuid
         endReportedToCallKit = false
 
-        let handle = CXHandle(type: .generic, value: destination)
-        let startAction = CXStartCallAction(call: uuid, handle: handle)
+        let startAction = CXStartCallAction(call: uuid, handle: Self.phoneStyleHandle(destination))
         callController.request(CXTransaction(action: startAction)) { error in
             if let error {
                 print("CallKit: avvio chiamata fallito: \(error)")
@@ -101,7 +100,7 @@ final class CallManager: NSObject, ObservableObject {
             isPendingFromPush = false
 
             let update = CXCallUpdate()
-            update.remoteHandle = CXHandle(type: .generic, value: handle)
+            update.remoteHandle = Self.phoneStyleHandle(handle)
             update.localizedCallerName = displayName
             update.hasVideo = false
             provider.reportCall(with: uuid, updated: update)
@@ -120,7 +119,7 @@ final class CallManager: NSObject, ObservableObject {
         endReportedToCallKit = false
 
         let update = CXCallUpdate()
-        update.remoteHandle = CXHandle(type: .generic, value: handle)
+        update.remoteHandle = Self.phoneStyleHandle(handle)
         update.localizedCallerName = displayName
         update.hasVideo = false
 
@@ -152,9 +151,15 @@ final class CallManager: NSObject, ObservableObject {
         endReportedToCallKit = false
         isPendingFromPush = true
 
+        // La rubrica ha la priorità sul nome eventualmente passato da
+        // Asterisk (CNAM del trunk PSTN, spesso assente/non affidabile in
+        // Italia): se c'è un contatto corrispondente è quasi sempre più utile.
+        let resolvedName = ContactResolver.displayName(forNumber: callerNumber)
+            ?? (callerName.isEmpty ? "Chiamata in arrivo" : callerName)
+
         let update = CXCallUpdate()
-        update.remoteHandle = CXHandle(type: .generic, value: callerNumber.isEmpty ? "Sconosciuto" : callerNumber)
-        update.localizedCallerName = callerName.isEmpty ? "Chiamata in arrivo" : callerName
+        update.remoteHandle = Self.phoneStyleHandle(callerNumber.isEmpty ? "Sconosciuto" : callerNumber)
+        update.localizedCallerName = resolvedName
         update.hasVideo = false
 
         provider.reportNewIncomingCall(with: uuid, update: update) { [weak self] error in
@@ -232,6 +237,18 @@ final class CallManager: NSObject, ObservableObject {
         pushTimeoutWorkItem?.cancel()
         pushTimeoutWorkItem = nil
         pendingAnswerAction = nil
+    }
+
+    /// CallKit abbina automaticamente un contatto in rubrica (schermata di
+    /// chiamata di sistema, Recenti) solo se il CXHandle è di tipo
+    /// `.phoneNumber` con il numero "nudo" — mai se è `.generic`, e mai se il
+    /// valore è un URI SIP completo tipo "sip:3482556548@93.70.98.172" invece
+    /// del solo numero. Gli interni brevi (es. "100") passano comunque il
+    /// controllo (sono solo cifre) ma non troveranno mai una corrispondenza
+    /// in rubrica, quindi non c'è effetto collaterale.
+    private static func phoneStyleHandle(_ value: String) -> CXHandle {
+        let looksLikePhoneNumber = !value.isEmpty && value.allSatisfy { $0.isNumber || $0 == "+" }
+        return CXHandle(type: looksLikePhoneNumber ? .phoneNumber : .generic, value: value)
     }
 }
 

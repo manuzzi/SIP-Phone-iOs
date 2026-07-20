@@ -14,6 +14,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         SIPSettings.registerDefaults()
         NotificationManager.requestAuthorizationIfNeeded()
+        ContactResolver.requestAccessIfNeeded()
         SIPManager.shared.start()
 
         let registry = PKPushRegistry(queue: .main)
